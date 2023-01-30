@@ -9,35 +9,40 @@ The final part of the course was about Finite Element Method (FEM), and his impl
 ## Some examples
 
 <!-- <div align="center">
-<img src="./img/Lagrange_interpolation.png" alt="Lagrange_interpolation" width="90%" style="max-width: 500px; border-radius: 10px"/>
+<img src="./img/Lagrange_interpolation.png" alt="Lagrange_interpolation" width="90%"/>
+<br>
 <figcaption>Lagrange interpolation varying the polynomial degree</figcaption>
 </div> -->
 
 <!-- <br>
 
 <div align="center">
-<img src="./img/SEIR_model.png" alt="SEIR_model" width="90%" style="max-width: 500px; border-radius: 10px"/>
+<img src="./img/SEIR_model.png" alt="SEIR_model" width="90%"/>
+<br>
 <figcaption>SEIR model with a beta coefficient variable over time (the beta variable is the infection rate)</figcaption>
 </div> -->
 
 <br>
 
 <div align="center">
-<img src="./img/Satelite_trajectory.png" alt="Satelite_trajectory" width="90%" style="max-width: 500px; border-radius: 10px"/>
+<img src="./img/Satelite_trajectory.png" alt="Satelite_trajectory" width="90%"/>
+<br>
 <figcaption>Simulation of the satellite trajectory approaching Earth due to hypotetical air resistance</figcaption>
 </div>
 
 <!-- <br>
 
 <div align="center">
-<img src="./img/Galerkian_application.png" alt="Galerkian_application" width="90%" style="max-width: 500px; border-radius: 10px"/>
+<img src="./img/Galerkian_application.png" alt="Galerkian_application" width="90%"/>
+<br>
 <figcaption>Simple application of the Galerkian method to a linear elastic element</figcaption>
 </div> -->
 
 <br>
 
 <div align="center">
-<img src="./img/Cauchy-Dirichlet_problem.png" alt="Cauchy-Dirichlet_problem" width="90%" style="max-width: 500px; border-radius: 10px"/>
+<img src="./img/Cauchy-Dirichlet_problem.png" alt="Cauchy-Dirichlet_problem" width="90%"/>
+<br>
 <figcaption>Example of a Cauchy-Dirichlet problem and his solution (using a non-complete Fourier Series)</figcaption>
 </div>
 
