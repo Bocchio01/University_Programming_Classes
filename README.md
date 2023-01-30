@@ -1,4 +1,4 @@
-# University_Programming_Classes
+# Programming_Classes
 
 This is where I keep track of all the code produced in the courses attended at the university. The repo is organised into several branches, each of which refers to a specific class.
 
@@ -7,6 +7,3 @@ Being a mechanical engineering student, much of the code in the repo is not abou
 
 ### Informatica B (a.k.a. Computer Science entry level)
 This was just a brief introduction to basic programming concepts. Some of the code here is at a very beginner level.
-
-### Metodi analitici e numerici per l'ingegneria (a.k.a. Analytical and numerical methods for engineering)
-Things get much more interesting here. The aim was to learn some of the techniques used by computers to handle real-world problems and to keep track of the approximation generated in the final solution. In the second half of the course we were talking about? still in the first half when I write this article, please wait....
