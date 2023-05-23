@@ -18,12 +18,18 @@ clear variables
 
 %% Section 0: Variable declaration
 
-cube_file_name = 'densita.cube';
+% cube_file_name = 'Cube files/cr-h2o_6-orb-40.cube';
+% cube_file_name = 'Cube files/cr-h2o_6-dens-dubl.cube';
+% cube_file_name = 'Cube files/h2o-elf.cube';
+% cube_file_name = 'Cube files/h2o-elpot.cube';
+cube_file_name = 'Cube files/h2o-nopot-dens.cube';
+% cube_file_name = 'Cube files/au-dens-2.cube';
+% cube_file_name = 'densita.cube';
 
 rho_0 = 0.3;
 delta_rho = 0.05;
 
-N_lithium = 100;
+N_lithium = 300;
 R_lithium  = 0.3;
 
 graph = true;
@@ -40,7 +46,12 @@ COMMENT2 = fgetl(fid);
 
 % Read the third line of the file and extract the number of atoms and the origin coordinates
 data = sscanf(fgetl(fid), '%d %f %f %f %d');
-NATOMS = data(1);
+if data(1) <= 0
+    disp('Negative number of athoms not supported. Exit the program')
+    return
+else
+    NATOMS = data(1);
+end
 ORIGIN = struct('X', data(2), 'Y', data(3), 'Z', data(4));
 
 % {NVAL} may be omitted if its value would be equal to one; it MUST be absent or have a value of one if {NATOMS} is negative.
@@ -84,7 +95,6 @@ ORIGIN_VECTOR = struct2array(ORIGIN)';
 
 % Reshape the data into a 3D array
 density = reshape(data, [AXIS.N]);
-density = permute(density, [3, 2, 1]);
 
 % Plot N slice of the electronic density data
 if graph
@@ -95,7 +105,7 @@ if graph
         colormap("parula");
         % colormap("hot");
         colorbar;
-        imagesc(squeeze(density(round(section_level),:,:)));
+        imagesc(squeeze(density(:,:,round(section_level))));
         title(sprintf('Densità elettronica @Z=%d', round(section_level)))
         xlabel('x_{eq}')
         ylabel('y_{eq}')
@@ -109,7 +119,8 @@ end
 idx = find(abs(density - rho_0) <= delta_rho);
 [x,y,z] = ind2sub(size(density), idx);
 
-ISO_DENSITY = [x y z] * VOXEL_GRID_MATRIX + ORIGIN_VECTOR';
+% We pass from index value to coordinate so we downgrade by 1 [x y z]
+ISO_DENSITY = ([z y x]-1) * VOXEL_GRID_MATRIX + ORIGIN_VECTOR';
 ISO_DENSITY = struct('X', num2cell(ISO_DENSITY(:, 1)), ...
     'Y', num2cell(ISO_DENSITY(:, 2)), ...
     'Z', num2cell(ISO_DENSITY(:, 3)));
@@ -140,23 +151,24 @@ if graph
     grid on
 
     % Create a 3D grid of coordinates corresponding to the density matrix
-    [X,Y,Z] = meshgrid( ...
-        1:size(density,1), ...
-        1:size(density,2), ...
-        1:size(density,3) ...
-        );
+    maxN = max([AXIS.N]);
+    xyz_vectors = ([1:maxN; 1:maxN; 1:maxN]-1)' * VOXEL_GRID_MATRIX + ORIGIN_VECTOR';
+    [X,Y,Z] = meshgrid(xyz_vectors(1:AXIS(1).N, 1), ...
+        xyz_vectors(1:AXIS(2).N, 2), ...
+        xyz_vectors(1:AXIS(3).N, 3));
+    
+    permutation_order = [3, 1, 2];
+    X = permute(X, permutation_order);
+    Y = permute(Y, permutation_order);
+    Z = permute(Z, permutation_order);
 
-    % I suppose the space grid is orthogonal...
-    X = X * VOXEL_GRID_MATRIX(1, 1) + ORIGIN_VECTOR(1);
-    Y = Y * VOXEL_GRID_MATRIX(2, 2) + ORIGIN_VECTOR(2);
-    Z = Z * VOXEL_GRID_MATRIX(3, 3) + ORIGIN_VECTOR(3);
 
     % Visualizing iso-density surface
     for isovalue = rho_0 + [-delta_rho, delta_rho]
 
         % Create the isosurface using the isodensity value and the density matrix
-        fv = isosurface(Y, X, Z, ...
-            density, ...
+        fv = isosurface(X, Y, Z, ...
+            reshape(data, size(X)), ...
             isovalue);
 
         % Plot the isosurface with a color map
@@ -186,7 +198,7 @@ end
 
 LI_VECTOR = struct('X', [], 'Y', [], 'Z', []);
 foundPosition = false(N_lithium, 1);
-maxAttempts = 100;
+maxAttempts = 20;
 
 for i = 1:N_lithium
     attempt = 1;
