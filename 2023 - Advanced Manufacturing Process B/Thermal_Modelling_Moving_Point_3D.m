@@ -1,14 +1,33 @@
+% Thermal_Modelling_Moving_Point_3D
+%
+% Simulates temperature distribution in a material under laser irradiation.
+% The thermal model adopted is: Steady State Moving Point Heat Source.
+%
+% Author: Tommaso Bocchietti
+% Date: 16/11/2023
+%
+% Instruction:
+% Provide in the same folder an excel file containing a set of experiment
+% about track width of the laser trace.
+%
+% Set 'calibrate_efficiency' to true for efficiency auto calibration.
+% Set 'graph' to true for visualization of different graphs.
+%
+% Disclaimer: Code is a starting point, may need adaptation for specific cases.
+%
+% Reference: AMPB (Politecnico di Milano A.A. 2023/2024)
+
 clc
 clear variables
 close all
 
 %% Problem statement
 
-graph = true;
 calibrate_efficiency = true;
+graph = true * [0 0 1 1 1];
 
-eta_guess = 0.49 + (-0.05:0.01:0.05);
-resolution = 10;
+eta_guess = 0.01:0.01:1;
+resolution = 5;
 scale_factor = 1e-6;
 
 % Material properties: Paint coating
@@ -17,7 +36,7 @@ material = struct( ...
     'specific_heat_capacity', 2500, ...
     'thermal_conductivity', 0.3, ...
     'vaporization_temperature', 300, ...
-    'absorption_coefficient', 0.3);
+    'absorption_coefficient', 1);
 
 % Material properties: Ductile iron @700°C
 % material = struct( ...
@@ -35,7 +54,7 @@ process = struct( ...
     'focus_point', 0, ...
     'n_passes', 1, ...
     'feed_rate', 800 * 1e-3 / 60, ...
-    'efficiency', 0.3, ...
+    'efficiency', 1, ...
     'geometrical_correction', 10, ...
     'temperature_ambient', 25);
 
@@ -47,7 +66,8 @@ domain = struct( ...
 
 % Experimental data
 track_widths = table2struct(readtable('Track-Width.xlsx'));
-VAP_experimental = mean([track_widths.('Blue')]) * scale_factor;
+VAP_experimental = mean([track_widths.('Red')]) * scale_factor;
+VAP_target = min([track_widths.('Red')]) * scale_factor;
 
 clear track_widths
 
@@ -56,7 +76,7 @@ clear track_widths
 % Here we suppose unitary efficiency and T_environment = 0°C
 
 r = @(eps, y, z) norm([eps, y, process.geometrical_correction * z]);
-T = @(eps, y, z) process.power * material.absorption_coefficient / (2*pi*material.thermal_conductivity*r(eps, y, z)) * ...
+T = @(eps, y, z) 0 + process.power * material.absorption_coefficient * 1 / (2*pi*material.thermal_conductivity*r(eps, y, z)) * ...
     exp(-process.feed_rate / (2*material.thermal_diffusivity) * (eps + r(eps, y, z)));
 
 
@@ -77,6 +97,8 @@ for eps_idx = 1:length(domain.eps)
 end
 toc
 
+clear eps_idx y_idx z_idx
+
 
 %% Model calibration
 
@@ -87,15 +109,18 @@ if (isnan(process.efficiency) || calibrate_efficiency)
 
     for i = 1:length(eta_guess)
 
-        VAP_field = computeVAP(T_field * eta_guess(i) + process.temperature_ambient, ...
-            material.vaporization_temperature, ...
-            domain);
-        VAP_simulated(i) = max(VAP_field(:, 1));
-        VAP_error(i) = abs(VAP_experimental - VAP_simulated(i)) / VAP_experimental;
+        VAP_field_XY = contourc( ...
+            domain.eps, ...
+            domain.y, ...
+            squeeze(T_field(:, :, 1))' * eta_guess(i) + process.temperature_ambient, ...
+            [material.vaporization_temperature material.vaporization_temperature]);
+
+        VAP_simulated(i) = 2 * max(VAP_field_XY(2, 2:end));
+        VAP_error(i) = 100 * abs(VAP_experimental - VAP_simulated(i)) / VAP_experimental;
 
     end
 
-    process.efficiency = eta_guess(find_nearest_index(VAP_error, 0));
+    process.efficiency = eta_guess(find_index(VAP_error, 0));
 
 end
 
@@ -103,73 +128,140 @@ end
 %% Model solution (calibrated)
 % We suppose that material can reach up to vaporization temperature
 
-T_field = min(material.vaporization_temperature, T_field * process.efficiency + process.temperature_ambient);
-VAP_field = computeVAP(T_field, ...
-    material.vaporization_temperature, ...
-    domain);
+T_field = T_field * process.efficiency + process.temperature_ambient;
 
-[VAP_width, VAP_width_x_idx] = max(VAP_field(:, 1));
-VAP_depth = domain.z(find(VAP_field(VAP_width_x_idx, :) > 0, 1, 'last'));
+VAP_field_XY = contourc( ...
+    domain.eps, ...
+    domain.y, ...
+    squeeze(T_field(:, :, 1))', ...
+    [material.vaporization_temperature material.vaporization_temperature]);
+
+VAP_field_XZ = contourc( ...
+    domain.eps, ...
+    domain.z, ...
+    squeeze(T_field(:, find_index(domain.y, 0), :))', ...
+    [material.vaporization_temperature material.vaporization_temperature]);
+
+[VAP_width_half, VAP_width_idx] = max(VAP_field_XY(2, 2:end));
+[VAP_depth, VAP_depth_idx] = max(VAP_field_XZ(2, 2:end));
+
+VAP_width = 2 * VAP_width_half;
+
+VAP_width_eps = VAP_field_XY(1, 1 + VAP_width_idx);
+VAP_depth_eps = VAP_field_XZ(1, 1 + VAP_depth_idx);
+
+clear VAP_width_half VAP_width_idx VAP_depth_idx
+
+
+%% Hollow profile
+% Here we compute half of the hollow profile that will be usefull to
+% visualize how the material surface will be left after the process.
+
+VAP_field_YZ = contourc( ...
+    domain.y, ...
+    domain.z, ...
+    squeeze(T_field(find_index(domain.eps, mean([VAP_width_eps, VAP_depth_eps])), :, :))', ...
+    [material.vaporization_temperature material.vaporization_temperature]);
+
+VAP_field_YZ = VAP_field_YZ(:, find_index(VAP_field_YZ(1, :), 0):end);
+
+z_values = linspace(VAP_field_YZ(2, 1), VAP_field_YZ(2, end), 100);
+y_values = interp1(VAP_field_YZ(2, :), VAP_field_YZ(1, :), z_values, 'pchip');
+
+hollow_profile = [y_values' z_values'];
+
+clear z_values y_values
 
 
 %% Output variables
 
-process
+process %#ok<NOPTS>
 output = struct( ...
-    'VAP_width', VAP_width, ...
-    'VAP_depth', VAP_depth)
+    'VAP_width', VAP_width / scale_factor, ...
+    'VAP_depth', VAP_depth / scale_factor, ...
+    'units', '\mu') %#ok<NOPTS>
+
 
 
 %% Solution visualization
-% - Temperature distribution
-% - Model calibration
-% - VAP analysis
 
-if graph
+if any(graph)
 
-    % Temperature distribution, T(space, depth)
-    figure_depth_comparison = figure('Name', 'Temperature distribution', 'NumberTitle', 'off');
-    for z = linspace(min(domain.z), max(domain.z), 3)
+    T_plot = min(material.vaporization_temperature, T_field);
+    domain_plot = struct( ...
+        'eps', domain.eps / scale_factor, ...
+        'y', domain.y / scale_factor, ...
+        'z', domain.z / scale_factor);
+    hollow_profile_plot = hollow_profile / scale_factor;
+
+    figs = NaN(sum(graph), 1);
+
+end
+
+
+%% Temperature distribution, T(space, depth)
+
+if graph(1)
+
+    figure_depth_comparison = figure('Name', 'Temperature distribution at different depth', 'NumberTitle', 'off');
+    for z = linspace(min(domain_plot.z), max(domain_plot.z), 3)
         nexttile
         hold on
         grid on
-        surf(domain.eps' / scale_factor, domain.y' / scale_factor, T_field(:, :, find_nearest_index(domain.z, z))')
+        surf( ...
+            domain_plot.eps', ...
+            domain_plot.y', ...
+            T_plot(:, :, find_index(domain_plot.z, z))')
         cbar = colorbar;
         cbar.Label.String = 'Temperature [°C]';
         axis tight
         view(3);
-        title({['Temperature distribution, depth=', num2str(z / scale_factor), ' [\mum]']})
-        xlabel('X [\mum]');
+        title({['Temperature distribution, depth=', num2str(z, '%.2f'), ' [\mum]']})
+        xlabel('\xi [\mum]');
         ylabel('Y [\mum]');
         zlabel('T [°C]');
     end
 
-    for z = linspace(min(domain.z), max(domain.z), 3)
+    for z = linspace(min(domain_plot.z), max(domain_plot.z), 3)
         nexttile
         hold on
         grid on
-        imagesc(squeeze(T_field(:, :, find_nearest_index(domain.z, z))'));
+        imagesc( ...
+            domain_plot.eps, ...
+            domain_plot.y, ...
+            squeeze(T_plot(:, :, find_index(domain_plot.z, z))'));
         cbar = colorbar;
         cbar.Label.String = 'Temperature [°C]';
         axis equal tight
-        title({['Temperature distribution, depth=', num2str(z / scale_factor), ' [\mum]']})
-        xlabel('X [\mum]');
+        title({['Temperature distribution, depth=', num2str(z, 2), ' [\mum]']})
+        xlabel('\xi [\mum]');
         ylabel('Y [\mum]');
     end
 
-    for z = linspace(min(domain.z), max(domain.z), 3)
+    for z = linspace(min(domain_plot.z), max(domain_plot.z), 3)
         nexttile
         hold on
         grid on
-        contour(domain.eps' / scale_factor, domain.y' / scale_factor, T_field(:, :, find_nearest_index(domain.z, z))', ...
+        contour( ...
+            domain_plot.eps', ...
+            domain_plot.y', ...
+            T_plot(:, :, find_index(domain_plot.z, z))', ...
             'ShowText', 'on');
         axis equal
-        title({['Iso-temperature lines, depth=', num2str(z / scale_factor), ' [\mum]']})
-        xlabel('X [\mum]');
+        title({['Iso-temperature lines, depth=', num2str(z, '%.2f'), ' [\mum]']})
+        xlabel('\xi [\mum]');
         ylabel('Y [\mum]');
     end
 
-    % Model calibration, eta
+    figs(1) = figure_depth_comparison;
+
+end
+
+
+%% Model calibration, eta
+
+if graph(2)
+
     figure_calibration = figure('Name', 'Model calibration', 'NumberTitle', 'off');
     if (exist('VAP_error', 'var') && exist('VAP_simulated', 'var') && exist('eta_guess', 'var'))
         nexttile
@@ -182,9 +274,9 @@ if graph
         ylabel('Error [%]');
 
         yyaxis right;
-        plot(eta_guess, VAP_simulated, 'r', ...
+        plot(eta_guess, VAP_simulated / scale_factor, 'r', ...
             'LineWidth', 2);
-        plot(eta_guess, VAP_experimental * eta_guess./eta_guess, '--k', ...
+        plot(eta_guess, VAP_experimental * ones(length(VAP_error), 1) / scale_factor, '--k', ...
             'LineWidth', 1);
         ylabel('VAP [\mum]');
 
@@ -193,81 +285,210 @@ if graph
         legend('Error [%]', 'VAP simulated [\mum]', 'VAP experimental [\mum]')
     end
 
-    % VAP analysis, melted region + VAP(x, depth)
-    deltaT = 5;
-    figure_melted_region = figure('Name', 'VAP analysis', 'NumberTitle', 'off');
+    figs(2) = figure_calibration;
+
+end
+
+
+%% VAP analysis
+
+if graph(3)
+
+    figure_VAP_analysis = figure('Name', 'VAP analysis', 'NumberTitle', 'off');
+    tiledlayout(4, 2);
+
+    % VAP on the XY plane (@surface)
+    nexttile([2 1]);
+    hold on
+    grid on
+    imagesc( ...
+        domain_plot.eps, ...
+        domain_plot.y, ...
+        squeeze(T_plot(:, :, 1))');
+    cbar = colorbar;
+    cbar.Label.String = 'Temperature [°C]';
+    axis tight
+    title('XY plane (@surface)')
+    xlabel('\xi [\mum]');
+    ylabel('Y [\mum]');
+
+    nexttile([2 1]);
+    hold on
+    grid on
+    contour( ...
+        domain_plot.eps, ...
+        domain_plot.y, ...
+        squeeze(T_field(:, :, 1))', ...
+        [material.vaporization_temperature material.vaporization_temperature]);
+    plot( ...
+        [VAP_width_eps, VAP_width_eps] / scale_factor, ...
+        [-VAP_width/2, VAP_width/2] / scale_factor, ...
+        'LineWidth', 2)
+    title({['VAP_{width}=', num2str(VAP_width / scale_factor, '%.2f'), ' [\mum]']})
+    xlabel('\xi [\mum]');
+    ylabel('Y [\mum]');
+
+    % VAP on the XZ plane (@middle of the material)
     nexttile
     hold on
     grid on
-    [X, Y, Z] = meshgrid(domain.y' / scale_factor, ...
-        domain.eps' / scale_factor, ...
-        -domain.z' / scale_factor);
+    imagesc( ...
+        domain_plot.eps, ...
+        domain_plot.z, ...
+        squeeze(T_plot(:, find_index(domain_plot.y, 0), :))');
+    set(gca, 'ydir', 'reverse')
+    cbar = colorbar;
+    cbar.Label.String = 'Temperature [°C]';
+    axis tight
+    title('XZ plane (@middle of the material)')
+    xlabel('\xi [\mum]');
+    ylabel('Z [\mum]');
+
+    nexttile
+    hold on
+    grid on
+    contour( ...
+        domain_plot.eps, ...
+        domain_plot.z, ...
+        squeeze(T_field(:, find_index(domain_plot.y, 0), :))', ...
+        [material.vaporization_temperature material.vaporization_temperature]);
+    plot( ...
+        [VAP_depth_eps, VAP_depth_eps] / scale_factor, ...
+        [0, VAP_depth] / scale_factor, ...
+        'LineWidth', 2)
+    set(gca, 'ydir', 'reverse')
+    title({['VAP_{depth}=', num2str(VAP_depth / scale_factor, '%.2f'), ' [\mum]']})
+    xlabel('\xi [\mum]');
+    ylabel('Y [\mum]');
+
+    % VAP on the YZ plane (@max VAP depth founded)
+    nexttile
+    hold on
+    grid on
+    imagesc( ...
+        domain_plot.y, ...
+        domain_plot.z, ...
+        squeeze(T_plot(find_index(domain.eps, VAP_depth_eps), :, :))');
+    set(gca, 'Ydir', 'reverse')
+    cbar = colorbar;
+    cbar.Label.String = 'Temperature [°C]';
+    axis tight
+    title('YZ plane (@max VAP_{depth} founded)')
+    xlabel('Y [\mum]');
+    ylabel('Z [\mum]');
+
+    nexttile
+    hold on
+    grid on
+    contour( ...
+        domain_plot.y, ...
+        domain_plot.z, ...
+        squeeze(T_field(find_index(domain.eps, VAP_depth_eps), :, :))', ...
+        [material.vaporization_temperature material.vaporization_temperature]);
+    plot( ...
+        [0, 0] / scale_factor, ...
+        [0, VAP_depth] / scale_factor, ...
+        'LineWidth', 2)
+    set(gca, 'ydir', 'reverse')
+    title({['VAP_{depth}=', num2str(VAP_depth / scale_factor, '%.2f'), ' [\mum]']})
+    xlabel('Y [\mum]');
+    ylabel('Z [\mum]');
+
+    figs(3) = figure_VAP_analysis;
+
+end
+
+
+%% VAP 3D visualization
+
+if graph(4)
+
+    figure_melted_region = figure('Name', 'VAP 3D visualization', 'NumberTitle', 'off');
+    nexttile
+    hold on
+    grid on
+    [X, Y, Z] = meshgrid(domain_plot.eps, ...
+        domain_plot.y, ...
+        -domain_plot.z);
     fv = isosurface(X, Y, Z, ...
-        T_field, ...
-        material.vaporization_temperature - deltaT);
+        permute(T_field, [2, 1, 3]), ...
+        material.vaporization_temperature);
     p = patch(fv);
     set(p, ...
         'FaceColor', 'red', ...
         'EdgeColor', 'none', ...
         'FaceAlpha', 0.3);
     view(3);
-    axis equal
+    % axis equal
     camlight;
     lighting gouraud;
-    title({['Melted region @T=T_{vaporization} - \DeltaT=', ...
-        num2str(material.vaporization_temperature), '-', num2str(deltaT), '=', ...
-        num2str(material.vaporization_temperature - deltaT), ' [°C]']})
-    xlabel('X [\mum]');
+    title('Melted region @T_{vaporization}')
+    xlabel('\xi [\mum]');
     ylabel('Y [\mum]');
     zlabel('Z [\mum]');
 
-    nexttile
-    hold on
-    grid on
-    set(gca, 'YDir', 'reverse');
-    imagesc(squeeze(VAP_field' / scale_factor));
-    % colormap('hot');
-    cbar = colorbar;
-    cbar.Label.String = 'VAP track width [\mum]';
-    axis equal tight
-    title('VAP analysis')
-    xlabel('X [\mum]');
-    ylabel('Z [\mum]');
+    figs(4) = figure_melted_region;
 
-    hold off
-    nexttile
-    hold on
-    grid on
-    set(gca, 'YDir', 'reverse');
-    imagesc(squeeze(reshape(T_field(VAP_width_x_idx, :, :), size(T_field, [2, 3]))'));
-    % colormap('parula');
-    cbar = colorbar;
-    cbar.Label.String = 'Temperature [°C]';
-    axis equal tight
-    title({['Max VAP section @x=', num2str(VAP_width / scale_factor), ' [\mum]']})
-    xlabel('X [\mum]');
-    ylabel('Z [\mum]');
+end
+
+
+%% Hollowed profile
+
+if graph(5)
+
+    figure_hollow_profile = figure('Name', 'Hollowed profile', 'NumberTitle', 'off');
+    tiledlayout('vertical')
+
+    for target = [VAP_experimental VAP_target] / scale_factor
+
+        nexttile
+        hold on
+        grid on
+        plot(hollow_profile_plot(:, 1), ...
+            -hollow_profile_plot(:, 2), '-b');
+        plot(target - hollow_profile_plot(:, 1), ...
+            -hollow_profile_plot(:, 2), '-r');
+        plot([0 target], [0 0], '--k')
+        plot([0 target], [-1 -1] * max(hollow_profile_plot(:, 2)), '-k', 'LineWidth', 2)
+        plot([1 1] * target/2, ...
+            [min(-hollow_profile_plot(:, 2)) -hollow_profile_plot(find_index(hollow_profile_plot(:, 1), target/2), 2)], '--r')
+        title({['Hollow profile, hatch distance=h_d=', num2str(target, '%.2f'), ' [\mum]']})
+        xlabel('Y [\mum]');
+        ylabel('Z [\mum]');
+        legend( ...
+            'Half profile #1', ...
+            'Half profile #2', ...
+            'Previous plane level', ...
+            'Ideal plane level', ...
+            'Ridge height');
+        axis([0 target -max(hollow_profile_plot(:, 2)) 0])
+
+    end
+
+    figs(5) = figure_hollow_profile;
+
+end
+
+
+%% Reorder graph
+
+for fig_idx = sort(find(graph == true), 'descend')
+
+    figure(figs(fig_idx));
+
 end
 
 
 
 %% Functions
 
-function VAP = computeVAP(T_field, temperature, domain)
-
-VAP = zeros( ...
-    length(domain.eps), ...
-    length(domain.z));
-
-[x_idx, y_idx, z_idx] = ind2sub(size(T_field), find(T_field >= temperature));
-
-for i = 1:length(x_idx)
-    VAP(x_idx(i), z_idx(i)) = max(VAP(x_idx(i), z_idx(i)), 2 * abs(domain.y(y_idx(i))));
-end
-
-end
-
-function idx = find_nearest_index(vector, target)
+function idx = find_index(vector, target)
+% FIND_INDEX find the vector index of the closest element
+% to a given target.
+%
+%   idx = FIND_INDEX(vector, target)
+%
+%   See also FIND.
 
 [~, idx] = min(abs(vector - target));
 
