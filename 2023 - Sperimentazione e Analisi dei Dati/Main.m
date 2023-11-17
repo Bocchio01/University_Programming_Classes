@@ -53,7 +53,7 @@ end
 
 %% Section 1: Reading molecule state data
 
-% Open the .cube', ... file
+% Open the '.cube' file
 fid = fopen(cube_file_name,'r');
 
 COMMENTS = [strtrim(fgetl(fid)) '; ' strtrim(fgetl(fid))];
@@ -223,8 +223,20 @@ for i = 1:N_lithium
         LI = ISO_DENSITY(index);
 
         % Calculate the distances between the new atom and existing atoms
-        D = pdist([[LI_POSITION.X]' [LI_POSITION.Y]' [LI_POSITION.Z]'; ...
-            struct2array(LI)]);
+        % D = pdist([[LI_POSITION.X]' [LI_POSITION.Y]' [LI_POSITION.Z]'; ...
+        %     struct2array(LI)]);
+
+        % Initialize a matrix to store the distances
+        num_points = length([LI_POSITION.X]);
+        D = zeros(num_points, 1);
+        
+        % Calculate the distances
+        for j = 1:num_points
+            dx = LI.X - LI_POSITION(j).X;
+            dy = LI.Y - LI_POSITION(j).Y;
+            dz = LI.Z - LI_POSITION(j).Z;
+            D(j) = norm([dx, dy, dz]);
+        end
 
         % Check if the distances satisfy the constraint
         if all(D >= R_lithium)
