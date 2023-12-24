@@ -1,0 +1,10 @@
+Q=[1 2 3;4 5 6; 7 8 9];
+val=input("Valore?");
+r=size(Q,1);
+c=size(Q,2);
+colonna = val.*ones(r,1);
+riga = val.*ones(1,c);
+C=[riga; Q];
+R=[colonna Q];
+disp(R);
+disp (C);

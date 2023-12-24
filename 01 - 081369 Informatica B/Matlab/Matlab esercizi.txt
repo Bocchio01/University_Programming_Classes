@@ -1,0 +1,245 @@
+%b(3:length(b),2)
+%prende la altezza della matrice calcolata
+%su colonna 1, e poi considera gli elementi
+%da 3 a length(b) di colonna 2
+
+clc;
+clear;
+
+a=[0:pi/1000:4*pi];
+d=[-4*pi:pi/100:0];
+z=cat(1,d',a');
+
+b=[z sin(z);];
+
+c=b(2:2:length(b),2);
+
+plot(z,b(:,2));
+xlabel('ascisse');
+ylabel('ordinate');
+title('Seno(a)');
+
+
+clc;
+clear;
+
+dist=15000;
+v1=50;
+v2=30;
+%t1=dist/v1;
+%s2=t1*v2;
+t=[0:dist/v1];
+
+hold on;
+plot(t,t.*v1);
+plot(t,t.*-v2+dist);
+xlabel('tempo (s)');
+ylabel('spazio (m)');
+title('Treni-stazioni');
+hold off;
+
+
+clc;
+clear;
+
+val=input('Dimmi il capitale: ');
+anno=0;
+val_temp=val;
+while val_temp<2*val
+    val_temp=val_temp*1.08;
+    anno=anno+1;
+end
+str=['Raddoppia dopo ' num2str(anno) ' anni'];
+disp(str)
+
+
+
+clc;
+clear;
+
+for k=1:7
+    nome_number(k)=input('Inserisci numero ');
+end
+
+
+tempo=3
+for k=tempo:-1:0
+    fprintf('\nMancano %d secondi', k);
+    pause(1);
+    if (k==0)
+        fprintf('\nFine!');
+    end
+end
+
+
+clc;
+clear;
+
+giorno=input('Dimmi il giorno: ','s');
+giorno=giorno(1:3);
+switch (giorno)
+    case {'lun','mar','mer','gio','ven'}
+        disp('Giorno lavorativo');
+    case {'sab','dom'}
+        disp('Giorno festivo');
+    otherwise
+        disp('Errore!');
+end
+
+
+
+clc;
+clear;
+
+v=randi(5,3,20);
+v(end,1)
+length(v)
+
+
+clc;
+clear;
+
+R=input('Inserisci valore R ');
+while (R<0 || R>100)
+    R=input('Reinserisci valore R ');
+end
+
+C=input('Inserisci valore C ');
+while (C<0 || C>100)
+    C=input('Reinserisci valore C ');
+end
+
+
+for r=1:R
+    for c=1:C
+        fprintf ('Inserisci il valore di posizione r=%d, c=%d', r,c);
+        M(r,c)=input('\nValore = ');
+    end
+end
+
+pari=zeros(1,C);
+for c=1:C
+    for r=1:R
+        if (mod(M(r,c),2)==0)
+            pari(c)=pari(c)+1;
+        end
+    end
+end
+
+%Indice colonna + valore elemento
+disp(find(pari==max(pari)));
+disp (max(pari));
+
+%oppure (solo valore)
+n=~mod(M,2);
+disp(max(sum(n)));
+
+
+clc;
+clear;
+
+randi(20,5,5);
+
+a=sum(sum(ans));
+b=mean(ans);
+c=min(ans);
+[d e]=max(max(ans));
+
+
+clc;
+clear;
+
+a=randi(5,10,30);
+P=a(2:2:end,:);
+D=a(1:2:end,:);
+d=D;
+d(1:2:end,:)=[];
+
+
+
+clc;
+clear;
+
+n=input('Dimmi il numero ');
+tot=fattorial(n);
+disp(tot);
+
+
+function [ris]=fattorial(n)
+    ris=n;
+    while (n>1)
+        ris=ris*(n-1);
+        n=n-1;
+    end
+end
+
+
+
+clc;
+clear;
+
+strIn=input('Inserisci una stringa ','s');
+if(checkIBAN(strIn))
+    disp('E un iban!');
+else
+    disp('Non è un iban!');
+end
+
+
+function [strOu] = removeSpaces(strIn)
+    strOu=strIn;    
+    strOu(strOu==' ')=[];
+end
+
+function [v] = isAlpha(str)
+    v=all(str>='A' & str<='Z');
+end
+
+function [d] = isDigit(str)
+    d=all(str>='0' & str<='9');
+end
+
+function [iban] =checkIBAN(strIn)
+    strOu=removeSpaces(strIn);
+    iban=(isAlpha(strOu(1:2)))&...
+        (isDigit(strOu(3:4)))&...
+        (isAlpha(strOu(5)))&...
+        (isDigit(strOu(6:end)))&...
+        (length(strOu)==27);
+end
+
+
+clc;
+clear;
+
+codaNormale = input('Inserire la coda normale');
+codaPrioritaria = input('Inserire la coda prioritaria');
+ultimoEstratto = input('Inserire tipo di ultimo numero estratto (0 normale, 1 prioritario)');
+
+if (ultimoEstratto==1)
+    if calcolaLunghezza(codaPrioritaria)>((calcolaLunghezza(codaNormale))/3)
+        [codaPrioritaria, num]=estraiPrimo(codaPrioritaria);
+    else
+        [codaNormale, num]=estraiPrimo(codaNormale);
+    end
+else
+    [codaPrioritaria, num]=estraiPrimo(codaPrioritaria);
+end
+    
+fprintf('Numero estratto: %d' ,num);
+
+
+
+function [nuovaCoda] = accoda(coda, valore)
+    nuovaCoda=[coda valore];
+end
+
+function [nuovaCoda, valore] = estraiPrimo(coda)
+    valore=coda(1);
+    nuovaCoda=coda;
+    nuovaCoda(1)=[];
+end
+
+function [lunghezza] = calcolaLunghezza(coda);
+    lunghezza=length(coda);
+end
