@@ -1,0 +1,54 @@
+Clear["Global`*"];
+$Assumptions=Element[{L1,L2,A1,A2,E1,E2,u,v},Reals]&&L1>0&&L2>0&&A1>0&&A2>0&&E1>0&&E2>0;
+
+(*Beam lenght*)
+l1[u_,v_] := Sqrt[(L1+u)^2+v^2];
+l2[u_,v_] := Sqrt[u^2+(L2+v)^2];
+l ={l1,l2};
+
+(*Green strain*)
+eps1[u_,v_] :=(l[[1]][u,v]^2-L1^2)/(2*L1^2);
+eps2[u_,v_] :=(l[[2]][u,v]^2-L2^2)/(2*L2^2);
+eps = {eps1, eps2};
+
+(*F_{int}*)
+Fi1[u_,v_] :=E1*A1*eps[[1]][u,v];
+Fi2[u_,v_] :=E2*A2*eps[[2]][u,v];
+Fi = {Fi1,Fi2};
+
+(*Trigonometry relations*)
+cosAlpha[u_,v_] = (L1+u)/l[[1]][u,v];
+sinAlpha[u_,v_] = v/l[[1]][u,v];
+cosBeta[u_,v_] = (L2+u)/l[[2]][u,v];
+sinBeta[u_,v_] = v/l[[2]][u,v];
+
+(*Equilibrium of the system*)
+Px[u_,v_] = Fi[[1]][u,v]*cosAlpha[u,v]+Fi[[2]][u,v]*sinBeta[u,v];
+Py[u_,v_] = Fi[[1]][u,v]*sinAlpha[u,v]+Fi[[2]][u,v]*cosBeta[u,v];
+P[u_,v_]={Px[u,v],Py[u,v]}; // FullSimplify
+
+(*Setting values for the problem datas*)
+problemDatas = {
+E1-> 70*10^9,A1->10^-3,L1->3,
+E2->70*10^9,A2->10^-3,L2->0.5
+};
+Pevaluation[u_,v_]= P[u,v]/. problemDatas; // FullSimplify
+
+(*Defining the taylor expansion series*)
+Ptaylor[x_, y_, taylorOrder_] := Normal @ Series[P[u, v] /. Thread[{u, v} -> {0, 0} + t {x, y}], {t, 0, taylorOrder}] /. t -> 1; // FullSimplify
+Ptaylorevaluation[x_, y_, taylorOrder_] := Normal @ Series[Pevaluation[u, v] /. Thread[{u, v} -> {0, 0} + t {x, y}], {t, 0, taylorOrder}] /. t -> 1; // FullSimplify
+
+(*Plot the difference between the taylor expansion and the exact formulation of Px(u,v)*)
+limit:=0.00001;
+For[taylorOrder=1,taylorOrder<=3,taylorOrder++,
+(*Plot3D[Ptaylorevaluation[x,y,taylorOrder][[1]]-Pevaluation[x,y][[1]],{x,-limit,limit},{y,-limit,limit}, ImageSize->Large] // Print;*)
+plot = Plot3D[Ptaylorevaluation[x, y, taylorOrder][[1]] - Pevaluation[x, y][[1]], {x, -limit, limit}, {y, -limit, limit}];
+Export[NotebookDirectory[] <> "/latex/pdf/residual_taylor_order_" <> ToString[taylorOrder] <> ".eps", plot];
+]
+
+
+(*Final results*)
+P[u,v]
+Ptaylor[u,v,2]
+Out[242]= {(A1 E1 (L1+u) (-L1^2+(L1+u)^2+v^2))/(2 L1^2 Sqrt[(L1+u)^2+v^2])+(A2 E2 v (-L2^2+u^2+(L2+v)^2))/(2 L2^2 Sqrt[u^2+(L2+v)^2]),(A1 E1 v (-L1^2+(L1+u)^2+v^2))/(2 L1^2 Sqrt[(L1+u)^2+v^2])+(A2 E2 (L2+u) (-L2^2+u^2+(L2+v)^2))/(2 L2^2 Sqrt[u^2+(L2+v)^2])}
+Out[243]= {(A1 E1 u)/L1+(A2 E2 v^2)/L2^2+(A1 E1 (u^2+v^2))/(2 L1^2),(A2 E2 v)/L2+(A1 E1 u v)/L1^2+(A2 E2 (u^2+2 u v-v^2))/(2 L2^2)}
