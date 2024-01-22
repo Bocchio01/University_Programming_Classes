@@ -1,0 +1,11 @@
+Model name,Corrector,Time (s),Iterations
+Model1,NR,0.036466,2
+Model1,mNR,0.025602,2
+Model2,NR,0.040957,3.088
+Model2,mNR,0.027599,3.088
+Model3,NR,0.039459,2.609
+Model3,mNR,0.023263,2.609
+Model4,NR,0.023834,2
+Model4,mNR,0.020071,2
+Model5,NR,0.016764,2
+Model5,mNR,0.011706,2

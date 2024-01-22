@@ -1,32 +1,7 @@
-clc
-clear variables
-close all
-
-addpath('Assignment_1\models')
-
-%% Problem datas
-
-modified_NR = false;
-
-geometry = struct( ...
-    'L', [3 0.5], ...
-    'A', 1e-3 * [1 1], ...
-    'E', 70e+9 * [1 1]);
-
-N_steps = 1000;
-tolerance = 1e-5;
-
-U = [0 0]';
-P = [0 0]';
-delta_P = 5 * [1 1]';
-
-assert(isequal(size(geometry.L), size(geometry.A), size(geometry.E)), 'Inconsistent input geometry data');
-
-
 %% Relationships Forces = f(Displacements)
 % Obtained using Mathematica.
 % For our purpose, we just need the formulation of Kt and Fint.
-% Diifferent model have been computed and they are stored in appropriate
+% Different model have been computed and they are stored in appropriate
 % functions listed below. In particular, we have:
 % - model_exact: Exact model with no geometrical approximations
 % - model_taylor_1: 1° order taylor series of the exact model
@@ -39,18 +14,80 @@ assert(isequal(size(geometry.L), size(geometry.A), size(geometry.E)), 'Inconsist
 %                   cos(beta)->1
 %                   sin(beta)->0
 
+clc
+clear variables
+close all
+
+addpath('Assignment_1\models')
+
+%% Problem datas
+
+geometry = struct( ...
+    'L', [3 0.5], ...
+    'A', 1e-3 * [1 1], ...
+    'E', 70e+9 * [1 1]);
+
+algorithm = struct( ...
+    'N_steps', 1000, ...
+    'U_zero', [0 0]', ...
+    'P_zero', [0 0]', ...
+    'P_delta', 5 * [1 1]', ...
+    'tolerance', 1e-5, ...
+    'correctors', ["NR", "mNR"]);
+
 models = {
     @(U, geometry) model_exact(U, geometry), ...
     @(U, geometry) model_taylor_1(U, geometry), ...
     @(U, geometry) model_taylor_2(U, geometry), ...
     @(U, geometry) model_taylor_3(U, geometry), ...
-    % @(U, geometry) model_approximated(U, geometry),...
+    @(U, geometry) model_approximated(U, geometry),...
     };
 
-results = cell(size(models));
+output = struct( ...
+    'plots', true * [1 1 1], ...
+    'export', true);
+
+assert(isequal(size(geometry.L), size(geometry.A), size(geometry.E)), 'Inconsistent input geometry data');
+% assert(); Method valid
+
+
+%% Create the solver structure
+% The solver structure will be used to store all the models and results of
+% the script. It's organized as follow:
+% - ModelName -> struct
+%   - handler -> refers to the anonymous function that returns [Kt, Fi]
+%                given the current position and geometry [U, geometry]
+%   - results -> struct
+%       - corrector#1 -> results obtained using corrector#1
+%       - corrector#2 -> results obtained using corrector#2
+%       - ...
+%       - corrector#N -> results obtained using corrector#N
+% Each results entry has the following structure:
+% - U (N_steps x N_displachments)
+% - iteraction (N_steps x 1)
+% - time (N_steps x 1)
+
+
+% model_names = cellfun(@func2str, models, 'UniformOutput', false);
+% model_names = cellfun(@(func) regexprep(func2str(func), '@(U, geometry) (\w+)', ''), models, 'UniformOutput', false);
+
+solvers = repmat( ...
+    create_solver_struct(length(algorithm.U_zero), algorithm.N_steps, length(algorithm.correctors)), ...
+    length(models), ...
+    1);
+
 for i = 1:length(models)
-    results{i} = createResultStruct(size(U, 1), N_steps);
+
+    solvers(i).model_name = ['Model', num2str(i)];
+    solvers(i).handler = models{i};
+
+    for j = 1:length(algorithm.correctors)
+        solvers(i).results(j).corrector = algorithm.correctors{j};
+    end
+
 end
+
+clear models corrector_name i j
 
 
 %% Models solution
@@ -58,97 +95,365 @@ end
 inverse = @(A) A \ eye(size(A));
 residual = @(P, Fi) Fi - P;
 
-for model_idx = 1:length(models)
-    for step = 1:N_steps
-        P = P + delta_P;
+for solver_idx = 1:length(solvers)
 
-        [Kt, Fi] = models{model_idx}(U, geometry);
+    for corrector_idx = 1:length(algorithm.correctors)
 
-        Kt0_inv = inverse(Kt);
-        U = method_euler(U, delta_P, Kt0_inv);
+        U = algorithm.U_zero;
+        P = algorithm.P_zero;
 
-        tic;
-        iteractions = 0;
-        while(norm(residual(P, Fi), 1) > tolerance)
+        for step = 1:algorithm.N_steps
 
-            iteractions = iteractions + 1;
+            P = P + algorithm.P_delta;
 
-            [Kt, Fi] = models{model_idx}(U, geometry);
+            % Start predictor
+            [Kt, Fi] = solvers(solver_idx).handler(U, geometry);
 
-            Kt_inv = ~modified_NR * inverse(Kt) + modified_NR * Kt0_inv;
-            U = method_newton_raphson(U, residual(P, Fi), Kt_inv);
+            Kt0_inv = inverse(Kt);
+            U = method_euler(U, algorithm.P_delta, Kt0_inv);
+            % End predictor
+
+            tic;
+            iteractions = 0;
+            % Start corrector
+            while(norm(residual(P, Fi), 1) > algorithm.tolerance)
+
+                iteractions = iteractions + 1;
+
+                [Kt, Fi] = solvers(solver_idx).handler(U, geometry);
+
+                switch corrector_idx
+                    case 1
+                        Kt_inv = inverse(Kt);
+                    case 2
+                        Kt_inv = Kt0_inv;
+                    otherwise
+                        error('Unknown corrector name');
+                end
+
+                U = method_newton_raphson(U, residual(P, Fi), Kt_inv);
+
+            end
+            % End corrector
+            time = toc;
+
+            solvers(solver_idx).results(corrector_idx).U(step, :) = U;
+            solvers(solver_idx).results(corrector_idx).iterations(step) = iteractions + 1;
+            solvers(solver_idx).results(corrector_idx).time(step) = time;
 
         end
-        time = toc;
-
-        % Saving result in the results data structure
-        results{model_idx}.U(step, :) = U;
-        results{model_idx}.iteractions(step) = iteractions + 1;
-        results{model_idx}.time(step) = time;
-
     end
 end
 
+clear model_names model_name corrector_idx corrector_name step
+clear P U time iteractions Kt Fi Kt_inv Kt0_inv inverse residual
+
+
+%% Export csv
+
+if output.export
+
+    N_correctors = length(algorithm.correctors);
+    N_models = length(solvers);
+
+    model_names = reshape(repmat({solvers.model_name}, N_correctors, 1), 1, [])';
+    correctors = reshape(repmat(algorithm.correctors', N_models, 1), 1, [])';
+
+    times = zeros(N_correctors * N_models, 1);
+    interactions = zeros(N_correctors * N_models, 1);
+
+    for solver_idx = 1:N_models
+        times((solver_idx-1) * N_correctors + (1:2)) = ...
+            [mean(solvers(solver_idx).results(1).time); mean(solvers(solver_idx).results(2).time)];
+
+        interactions((solver_idx-1) * N_correctors + (1:2)) = ...
+            [mean(solvers(solver_idx).results(1).iterations); mean(solvers(solver_idx).results(2).iterations)];
+    end
+
+    data = [model_names, correctors, num2cell(times * 1000), num2cell(interactions)];
+
+    header = ["Model name" "Corrector" "Time (s)" "Iterations"];
+    writematrix([header; data], 'Assignment_1/Results/numerical_results.csv');
+
+    clear data header model_names correctors times interactions solver_idx N_correctors N_models
+
+end
 
 %% Plots
 
-nexttile
-hold on
-grid on
+points = [
+    0, 0.5; ...
+    3, 0.5; ...
+    3, 0];
 
-A = [0, 0.5];
-B = [3, 0.5];
-C = [3, 0];
+if output.plots(1)
 
-draw_problem(A, B, C);
+    figure_deformed_shape = figure('Name', 'Deformed shape analysis', 'NumberTitle', 'off');
+    tiledlayout(2, 3);
 
-scale_factor = 1e3;
-for model_idx = 1:length(models)
-    Bf = (scale_factor * results{model_idx}.U(end,:) + [3 0.5]);
+    nexttile([1 3]);
+    scale_factor = 1e3;
+    hold on
+    grid on
 
-    h = plot([A(1), Bf(1)], [A(2), Bf(2)], '--', 'DisplayName', func2str(models{model_idx}));
-    plot([C(1), Bf(1)], [C(2), Bf(2)], '--', 'Color', get(h, 'Color'));
+    axis equal;
+    xlim([-0.5, 5]);
+    ylim([-0.1, 1]);
+
+    draw_structure(points, '-b', 2);
+
+    for solver_idx = 1:length(solvers)
+
+        B = scale_factor * solvers(solver_idx).results(1).U(end, :) + [3 0.5];
+        draw_structure([points(1, :); B; points(3, :)], '--', 1)
+
+    end
+
+    title(sprintf("Final deformed shape @scaleFactor = %d", scale_factor))
+    legend(["Unloaded structure"; {solvers.model_name}'])
+    xlabel('x [m]');
+    ylabel('y [m]');
+
+
+    % Trajectory of the deformed shape
+    nexttile(4);
+    scale_factor = 1e6;
+    hold on
+    grid on
+    axis equal
+    xlim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 1))]);
+    ylim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 2))]);
+
+    if (size(algorithm.U_zero, 1) == 2)
+        for solver_idx = 1:length(solvers)
+
+            B = solvers(solver_idx).results(1).U;
+            plot(scale_factor * [0; B(:, 1)], ...
+                scale_factor * [0; B(:, 2)], ...
+                '-', 'LineWidth', 1);
+
+        end
+    end
+
+    title("Trajectory of B point")
+    legend({solvers.model_name})
+    xlabel('u [\mum]');
+    ylabel('v [\mum]');
+
+
+    % Error of Ux with respect to exact model
+    nexttile(5);
+    scale_factor = 1e6;
+    hold on
+    grid on
+
+    for solver_idx = 1:length(solvers)
+
+        plot(algorithm.P_delta(1) * 0:algorithm.N_steps-1, ...
+            scale_factor * (solvers(solver_idx).results(1).U(:, 1) - solvers(1).results(1).U(:, 1)), ...
+            '-', 'LineWidth', 1);
+
+    end
+
+    title("Error for U_x")
+    legend({solvers.model_name})
+    xlabel('P_x [Pa]');
+    ylabel('E_u [\mum]');
+
+
+    % Error of Uy with respect to exact model
+    nexttile(6);
+    scale_factor = 1e6;
+    hold on
+    grid on
+
+    for solver_idx = 1:length(solvers)
+
+        plot(algorithm.P_delta(2) * 0:algorithm.N_steps-1, ...
+            scale_factor * (solvers(solver_idx).results(1).U(:, 2) - solvers(1).results(1).U(:, 2)), ...
+            '-', 'LineWidth', 1);
+
+    end
+
+    title("Error for U_y")
+    legend({solvers.model_name})
+    xlabel('P_y [Pa]');
+    ylabel('E_v [\mum]');
+
+    figs(1) = figure_deformed_shape;
+
+    clear solver_idx scale_factor B figure_deformed_shape
 end
 
-lineHandles = [];
-legendNames = cell(1, length(models));
+if output.plots(2)
 
-for model_idx = 1:length(models)
-    Bf = (scale_factor * results{model_idx}.U(end,:) + [3 0.5]);
+    figure_correctors_comparison = figure('Name', 'Correctors methods comparison', 'NumberTitle', 'off');
+    tiledlayout(2, 1);
 
-    h1 = plot([A(1), Bf(1)], [A(2), Bf(2)], '--');
-    h2 = plot([C(1), Bf(1)], [C(2), Bf(2)], '--', 'Color', get(h1, 'Color'));
+    % Iteraction comparison
+    nexttile(1);
+    hold on
+    grid on
 
-    lineHandles(model_idx) = h1;
-    legendNames{model_idx} = func2str(models{model_idx});
+    xlim([0.5, length(solvers) + 0.5]);
+    ylim([0, 5]);
+
+    xticks(1:length(solvers));
+    xticklabels({solvers.model_name});
+
+    NR = zeros(length(solvers), 1);
+    mNR = zeros(length(solvers), 1);
+
+    for solver_idx = 1:length(solvers)
+
+        NR(solver_idx) = mean(solvers(solver_idx).results(1).iterations);
+        mNR(solver_idx) = mean(solvers(solver_idx).results(2).iterations);
+
+    end
+
+    plot(NR, '-*', 'LineWidth', 2);
+    plot(mNR, '-*', 'LineWidth', 2);
+
+    title('Iteraction comparison')
+    legend(algorithm.correctors)
+    xlabel('Models');
+    ylabel('#iteraction');
+
+
+    % Time comparison
+    nexttile(2);
+    scale_factor = 1e6;
+    hold on
+    grid on
+
+    xlim([0.5, length(solvers) + 0.5]);
+    ylim([0, 70]);
+
+    xticks(1:length(solvers));
+    xticklabels({solvers.model_name});
+
+    NR = zeros(length(solvers), 1);
+    mNR = zeros(length(solvers), 1);
+
+    for solver_idx = 1:length(solvers)
+
+        NR(solver_idx) = mean(solvers(solver_idx).results(1).time);
+        mNR(solver_idx) = mean(solvers(solver_idx).results(2).time);
+
+    end
+
+    plot(scale_factor * NR, '-*', 'LineWidth', 2);
+    plot(scale_factor * mNR, '-*', 'LineWidth', 2);
+
+    title('Time comparison')
+    legend(algorithm.correctors)
+    xlabel('Models');
+    ylabel('Computational time [\mus]');
+
+    figs(2) = figure_correctors_comparison;
+
+    clear solver_idx scale_factor NR mNR figure_correctors_comparison
+
 end
 
-legend(lineHandles, legendNames, 'Location', 'Best', 'Interpreter', 'none');
+if output.plots(3)
+
+    figure_force_displacement = figure('Name', 'Force versus displacement', 'NumberTitle', 'off');
+    tiledlayout(1, 2);
+
+    % Force(displacement) along x direction
+    nexttile(1);
+    scale_factor = 1e6;
+    hold on
+    grid on
+
+    for solver_idx = 1:length(solvers)
+
+        plot(scale_factor * solvers(solver_idx).results(1).U(:, 1), ...
+            algorithm.P_delta(1) * 0:algorithm.N_steps-1, ...
+            '-', 'LineWidth', 1);
+
+    end
+
+    title('P_x(U_x)')
+    legend({solvers.model_name})
+    xlabel('U_x [\mum]');
+    ylabel('P_x [Pa]');
+
+    % Force(displacement) along y direction
+    nexttile(2);
+    scale_factor = 1e6;
+    hold on
+    grid on
+
+    for solver_idx = 1:length(solvers)
+
+        plot(scale_factor * solvers(solver_idx).results(1).U(:, 2), ...
+            algorithm.P_delta(2) * 0:algorithm.N_steps-1, ...
+            '-', 'LineWidth', 1);
+
+    end
+
+    title('P_y(U_y)')
+    legend({solvers.model_name})
+    xlabel('U_y [\mum]');
+    ylabel('P_y [Pa]');
+
+    figs(3) = figure_force_displacement;
+
+    clear solver_idx scale_factor figure_force_displacement
+
+end
+
+
+for fig_idx = sort(find(output.plots == true), 'descend')
+
+    figure(figs(fig_idx));
+    
+    if output.export
+        figureName = lower(strrep(get(figs(fig_idx), 'Name'), ' ', '_'));
+        % set(figs(fig_idx), 'Position', [100, 100, 800, 600]);
+        set(figs(fig_idx), 'PaperPosition', 2 * [0, 0, 15, 10]);
+        print(figs(fig_idx), ['Assignment_1\Results\' figureName '.png'], '-dpng', '-r100')
+    end
+    
+end
+
+clear points fig_idx
+
 
 
 %% Functions
 
-function [] = draw_problem(A, B, C)
+function [] = draw_structure(points, format, line_width)
 
-% Plot initial position
-plot([A(1), B(1)], [A(2), B(2)], '-b', 'LineWidth', 2);
-plot([C(1), B(1)], [C(2), B(2)], '-b', 'LineWidth', 2);
-
-% Set axis properties
-axis equal;
-xlim([-0.5, 4]);
-ylim([-0.1, 1]);
+plot(points(:, 1), points(:, 2), format, 'LineWidth', line_width);
 
 end
 
-function resultStruct = createResultStruct(U_size, N_steps)
+function solver_struct = create_solver_struct(U_size, N_steps, N_correctors)
 
-resultStruct = struct( ...
+result_struct = create_result_struct(U_size, N_steps);
+
+solver_struct = struct( ...
+    'model_name', '', ...
+    'handler', @handle, ...
+    'results', repmat(result_struct, N_correctors, 1) ...
+    );
+
+end
+
+function result_struct = create_result_struct(U_size, N_steps)
+
+result_struct = struct( ...
+    'corrector', '', ...
     'U', zeros(N_steps, U_size), ...
     'iterations', zeros(N_steps, 1), ...
-    'time', zeros(N_steps, 1));
+    'time', zeros(N_steps, 1) ...
+    );
 
 end
+
 
 
 
