@@ -6,6 +6,7 @@
 \usepackage{titlesec}
 \usepackage{soul}
 \usepackage{csvsimple}
+% \usepackage{footnote}
 
 \usetikzlibrary{calc,patterns,angles,quotes}
 \setlength{\parindent}{0pt}
@@ -42,21 +43,22 @@ pdfauthor={Tommaso Bocchietti}
 \input{src/02 - methodology}
 \input{src/03 - solution}
 \input{src/04 - numerical_solution}
-\input{src/05 - results}
+\input{src/05 - implementation}
+\input{src/06 - results}
 
 
 \appendix
 \section{Mathematica code}
 \label{sec:appendix}
 
-Here is the Mathematica code used to set up the system of equations and perform some symbolic computations.
+Here follows the \texttt{Mathematica} notebook used for symbolic analysis of the equations.
 
 \lstinputlisting[
     style=mathematica,
     language=Mathematica,
     caption=Mathematica notebook used for symbolic analysis of the equations.,
     firstline=1,
-    lastline=39
+    lastline=56
 ]{notebook.txt}
 
 \end{document}

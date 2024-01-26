@@ -1,4 +1,4 @@
-function [Kt, Fint] = model_approximated(U, geometry)
+function [Kt, Fint] = model_approximated_hard(U, geometry)
 
 [L1, A1, E1, L2, A2, E2] = decompose_geometry(geometry);
 [u, v] = decompose_u(U);

@@ -1,11 +1,13 @@
-Model name,Corrector,Time (s),Iterations
-Model1,NR,0.036466,2
-Model1,mNR,0.025602,2
-Model2,NR,0.040957,3.088
-Model2,mNR,0.027599,3.088
-Model3,NR,0.039459,2.609
-Model3,mNR,0.023263,2.609
-Model4,NR,0.023834,2
-Model4,mNR,0.020071,2
-Model5,NR,0.016764,2
-Model5,mNR,0.011706,2
+"Model name","Corrector","Time (s)","Iterations"
+"@(U,geometry)model-exact(U,geometry)","NR","0.069575","2"
+"@(U,geometry)model-exact(U,geometry)","mNR","0.036938","2"
+"@(U,geometry)model-taylor-1(U,geometry)","NR","0.025818","2"
+"@(U,geometry)model-taylor-1(U,geometry)","mNR","0.024817","2"
+"@(U,geometry)model-taylor-2(U,geometry)","NR","0.038946","2"
+"@(U,geometry)model-taylor-2(U,geometry)","mNR","0.02402","2"
+"@(U,geometry)model-taylor-3(U,geometry)","NR","0.033302","2"
+"@(U,geometry)model-taylor-3(U,geometry)","mNR","0.025112","2"
+"@(U,geometry)model-approximated-soft(U,geometry)","NR","0.030173","2"
+"@(U,geometry)model-approximated-soft(U,geometry)","mNR","0.021198","2"
+"@(U,geometry)model-approximated-hard(U,geometry)","NR","0.025787","2"
+"@(U,geometry)model-approximated-hard(U,geometry)","mNR","0.023549","2"

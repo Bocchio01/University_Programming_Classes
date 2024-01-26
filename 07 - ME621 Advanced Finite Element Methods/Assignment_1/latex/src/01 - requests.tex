@@ -1,4 +1,6 @@
 \section{Requests}
+\label{sec:requests}
+
 A system of two aluminum bars of the same material is shown in the following figure.
 The system is subjected to two external loads, $P_x$ and $P_y$, at joint B.
 A and C are connected to pinned supports.
@@ -9,7 +11,7 @@ A and C are connected to pinned supports.
 
         \coordinate (A) at (0,0.5);
         \coordinate (B) at (3,0.5);
-        \coordinate (Bf) at (3.5,1);
+        \coordinate (Bf) at (3.7,1);
         \coordinate (C) at (3,0);
 
         % Joint names
@@ -39,10 +41,12 @@ A and C are connected to pinned supports.
         \draw[->] (Bf) -- ++(0.3, 0) node[right] {$\vec{P_x}$};
         \draw[->] (Bf) -- ++(0, 0.3) node[above] {$\vec{P_y}$};
         \draw[->] (B) -- (Bf) node[midway, above] {$\vec{u}$};
+        % \draw[->, shorten >=150pt] (Bf) -- (A) node[above, above] {$\vec{F_1}$};
+        % \draw[->, shorten >=50pt] (Bf) -- (C) node[above, right] {$\vec{F_2}$};
 
     \end{tikzpicture}
     \caption{Problem representation}
-    \label{fig:problem_representationy}
+    \label{fig:problem_representation}
 \end{figure}
 
 The problem asks to:
@@ -53,15 +57,18 @@ The problem asks to:
     \item Find the displacement of point B after the final increment.
 \end{itemize}
 
-\noindent Write a MATLAB code with a convergence error of $10^-5$ to numerically solve the problem.
+Write a \texttt{MATLAB} code with a convergence error of $10^-5$ to numerically solve the problem.
 Use a combination of (a) Euler and N-R, and (b) Euler and modified N-R.
 Also plot the resultant force versus the resultant displacement.
 
-\noindent Use the Green strain measure:
+Use the Green strain measure:
 
 \begin{equation}
-    \epsilon = \frac{l^2 - L^2}{2L^2}
+    E_i = \frac{l_i^2 - L^2}{2L^2}
+    \label{eq:green_strain_measure_formula}
 \end{equation}
+
+From now on, we will refer to the Green strain measure as $\epsilon_{1,2}$ to differentiate it from the Young's modulus $E_{1,2}$.
 
 \begin{table}[H]
     \centering

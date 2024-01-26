@@ -7,7 +7,13 @@
 % - model_taylor_1: 1° order taylor series of the exact model
 % - model_taylor_2: 2° order taylor series of the exact model
 % - model_taylor_3: 3° order taylor series of the exact model
-% - model_approximation: Hand-made approximation of the exact model.
+% - model_approximation_soft: Hand-made approximation of the exact model.
+%   Assumptions:    small displachment of node B
+%                   cos(alpha)->1
+%                   sin(alpha)->alpha
+%                   cos(beta)->1
+%                   sin(beta)->beta
+% - model_approximation_hard: Hand-made approximation of the exact model.
 %   Assumptions:    small displachment of node B
 %                   cos(alpha)->1
 %                   sin(alpha)->0
@@ -18,7 +24,6 @@ clc
 clear variables
 close all
 
-addpath('Assignment_1\models')
 
 %% Problem datas
 
@@ -40,7 +45,8 @@ models = {
     @(U, geometry) model_taylor_1(U, geometry), ...
     @(U, geometry) model_taylor_2(U, geometry), ...
     @(U, geometry) model_taylor_3(U, geometry), ...
-    @(U, geometry) model_approximated(U, geometry),...
+    @(U, geometry) model_approximated_soft(U, geometry),...
+    @(U, geometry) model_approximated_hard(U, geometry),...
     };
 
 output = struct( ...
@@ -48,28 +54,25 @@ output = struct( ...
     'export', true);
 
 assert(isequal(size(geometry.L), size(geometry.A), size(geometry.E)), 'Inconsistent input geometry data');
-% assert(); Method valid
 
 
 %% Create the solver structure
 % The solver structure will be used to store all the models and results of
 % the script. It's organized as follow:
-% - ModelName -> struct
-%   - handler -> refers to the anonymous function that returns [Kt, Fi]
-%                given the current position and geometry [U, geometry]
-%   - results -> struct
+% - model_name: name of the model
+% - handler:    refers to the anonymous function that returns [Kt, Fi]
+%               given the current position and geometry [U, geometry]
+% - results:    struct
 %       - corrector#1 -> results obtained using corrector#1
 %       - corrector#2 -> results obtained using corrector#2
 %       - ...
 %       - corrector#N -> results obtained using corrector#N
+% 
 % Each results entry has the following structure:
-% - U (N_steps x N_displachments)
-% - iteraction (N_steps x 1)
-% - time (N_steps x 1)
-
-
-% model_names = cellfun(@func2str, models, 'UniformOutput', false);
-% model_names = cellfun(@(func) regexprep(func2str(func), '@(U, geometry) (\w+)', ''), models, 'UniformOutput', false);
+% - corrector:  name of the corrector used to solve
+% - U:          vector/matrix containing displachment for each step (N_steps x N_displachments)
+% - iteraction: vector containing number of iterations needed for each step (N_steps x 1)
+% - time:       vector containing CPU time used for each step (N_steps x 1)
 
 solvers = repmat( ...
     create_solver_struct(length(algorithm.U_zero), algorithm.N_steps, length(algorithm.correctors)), ...
@@ -78,7 +81,7 @@ solvers = repmat( ...
 
 for i = 1:length(models)
 
-    solvers(i).model_name = ['Model', num2str(i)];
+    solvers(i).model_name = strrep(func2str(models{i}), '_', '-');
     solvers(i).handler = models{i};
 
     for j = 1:length(algorithm.correctors)
@@ -179,6 +182,7 @@ if output.export
 
 end
 
+
 %% Plots
 
 points = [
@@ -192,20 +196,25 @@ if output.plots(1)
     tiledlayout(2, 3);
 
     nexttile([1 3]);
-    scale_factor = 1e3;
+    scale_factor = 1e1;
     hold on
     grid on
 
     axis equal;
-    xlim([-0.5, 5]);
-    ylim([-0.1, 1]);
+    % xlim([-0.5, 5]);
+    % ylim([-0.1, 1]);
 
-    draw_structure(points, '-b', 2);
+    plot(points(:, 1), points(:, 2), '-b', 'LineWidth', 2);
 
     for solver_idx = 1:length(solvers)
 
         B = scale_factor * solvers(solver_idx).results(1).U(end, :) + [3 0.5];
-        draw_structure([points(1, :); B; points(3, :)], '--', 1)
+        pointsDeformed = [
+            points(1, :);
+            B;
+            points(3, :)
+            ];
+        plot(pointsDeformed(:, 1), pointsDeformed(:, 2), '--', 'LineWidth', 2);
 
     end
 
@@ -221,8 +230,8 @@ if output.plots(1)
     hold on
     grid on
     axis equal
-    xlim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 1))]);
-    ylim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 2))]);
+    % xlim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 1))]);
+    % ylim([0, scale_factor * max(solvers(solver_idx).results(1).U(:, 2))]);
 
     if (size(algorithm.U_zero, 1) == 2)
         for solver_idx = 1:length(solvers)
@@ -282,7 +291,7 @@ if output.plots(1)
 
     figs(1) = figure_deformed_shape;
 
-    clear solver_idx scale_factor B figure_deformed_shape
+    clear solver_idx scale_factor B figure_deformed_shape pointsDeformed
 end
 
 if output.plots(2)
@@ -295,8 +304,8 @@ if output.plots(2)
     hold on
     grid on
 
-    xlim([0.5, length(solvers) + 0.5]);
-    ylim([0, 5]);
+    % xlim([0.5, length(solvers) + 0.5]);
+    % ylim([0, 5]);
 
     xticks(1:length(solvers));
     xticklabels({solvers.model_name});
@@ -326,8 +335,8 @@ if output.plots(2)
     hold on
     grid on
 
-    xlim([0.5, length(solvers) + 0.5]);
-    ylim([0, 70]);
+    % xlim([0.5, length(solvers) + 0.5]);
+    % ylim([0, 70]);
 
     xticks(1:length(solvers));
     xticklabels({solvers.model_name});
@@ -424,12 +433,6 @@ clear points fig_idx
 
 
 %% Functions
-
-function [] = draw_structure(points, format, line_width)
-
-plot(points(:, 1), points(:, 2), format, 'LineWidth', line_width);
-
-end
 
 function solver_struct = create_solver_struct(U_size, N_steps, N_correctors)
 
