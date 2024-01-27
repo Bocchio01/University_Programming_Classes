@@ -1,24 +1,10 @@
-%% Relationships Forces = f(Displacements)
-% Obtained using Mathematica.
-% For our purpose, we just need the formulation of Kt and Fint.
-% Different model have been computed and they are stored in appropriate
-% functions listed below. In particular, we have:
-% - model_exact: Exact model with no geometrical approximations
-% - model_taylor_1: 1° order taylor series of the exact model
-% - model_taylor_2: 2° order taylor series of the exact model
-% - model_taylor_3: 3° order taylor series of the exact model
-% - model_approximation_soft: Hand-made approximation of the exact model.
-%   Assumptions:    small displachment of node B
-%                   cos(alpha)->1
-%                   sin(alpha)->alpha
-%                   cos(beta)->1
-%                   sin(beta)->beta
-% - model_approximation_hard: Hand-made approximation of the exact model.
-%   Assumptions:    small displachment of node B
-%                   cos(alpha)->1
-%                   sin(alpha)->0
-%                   cos(beta)->1
-%                   sin(beta)->0
+% ME621 - Advanced Finite Element Methods
+% Assignment 1
+% Tommaso Bocchietti
+% A.Y. 2023/24 - W24
+% 
+% Models obtained using Mathematica. Refer to the attached Report.pdf 
+% for further details.
 
 clc
 clear variables
@@ -51,14 +37,14 @@ models = {
 
 output = struct( ...
     'plots', true * [1 1 1], ...
-    'export', true);
+    'export',  false);
 
 assert(isequal(size(geometry.L), size(geometry.A), size(geometry.E)), 'Inconsistent input geometry data');
 
 
-%% Create the solver structure
-% The solver structure will be used to store all the models and results of
-% the script. It's organized as follow:
+%% Solver structure
+% Used to store all the models and results of the script.
+% Organized as follow:
 % - model_name: name of the model
 % - handler:    refers to the anonymous function that returns [Kt, Fi]
 %               given the current position and geometry [U, geometry]
@@ -154,31 +140,32 @@ clear P U time iteractions Kt Fi Kt_inv Kt0_inv inverse residual
 
 %% Export csv
 
+% numerical_results_Pxxxx_Pyxxx
 if output.export
-
+    
     N_correctors = length(algorithm.correctors);
     N_models = length(solvers);
 
-    model_names = reshape(repmat({solvers.model_name}, N_correctors, 1), 1, [])';
-    correctors = reshape(repmat(algorithm.correctors', N_models, 1), 1, [])';
+    model_names = reshape(repmat({solvers.model_name}, 1, 1), 1, [])';
 
-    times = zeros(N_correctors * N_models, 1);
-    interactions = zeros(N_correctors * N_models, 1);
-
+    P_max = algorithm.N_steps * algorithm.P_delta + algorithm.P_zero;
+    P_maxs = reshape(repmat(P_max, N_models, 1), 2, [])';
+    U_maxs = zeros(N_models, 2);
+    
     for solver_idx = 1:N_models
-        times((solver_idx-1) * N_correctors + (1:2)) = ...
-            [mean(solvers(solver_idx).results(1).time); mean(solvers(solver_idx).results(2).time)];
-
-        interactions((solver_idx-1) * N_correctors + (1:2)) = ...
-            [mean(solvers(solver_idx).results(1).iterations); mean(solvers(solver_idx).results(2).iterations)];
+        U_maxs(solver_idx, :) = solvers(solver_idx).results(1).U(end, :);
     end
 
-    data = [model_names, correctors, num2cell(times * 1000), num2cell(interactions)];
+    % Convert numeric arrays to cell arrays
+    model_names_cell = cellstr(model_names);
+    P_maxs_cell = num2cell(P_maxs);
+    U_maxs_cell = arrayfun(@(x) sprintf('%.2e', x), U_maxs, 'UniformOutput', false);
 
-    header = ["Model name" "Corrector" "Time (s)" "Iterations"];
-    writematrix([header; data], 'Assignment_1/Results/numerical_results.csv');
+    % Concatenate cell arrays
+    data = [model_names_cell, P_maxs_cell, U_maxs_cell];
 
-    clear data header model_names correctors times interactions solver_idx N_correctors N_models
+    header = ["Model name" "Px" "Py" "Ux" "Uy"];
+    writematrix([header; data], 'Assignment_1/latex/files/numerical_results_Px5000000_Py5000000.csv');
 
 end
 
@@ -204,7 +191,7 @@ if output.plots(1)
     % xlim([-0.5, 5]);
     % ylim([-0.1, 1]);
 
-    plot(points(:, 1), points(:, 2), '-b', 'LineWidth', 2);
+    plot(points(:, 1), points(:, 2), '-k', 'LineWidth', 2);
 
     for solver_idx = 1:length(solvers)
 
@@ -214,12 +201,12 @@ if output.plots(1)
             B;
             points(3, :)
             ];
-        plot(pointsDeformed(:, 1), pointsDeformed(:, 2), '--', 'LineWidth', 2);
+        plot(pointsDeformed(:, 1), pointsDeformed(:, 2), '--', 'LineWidth', 1);
 
     end
 
     title(sprintf("Final deformed shape @scaleFactor = %d", scale_factor))
-    legend(["Unloaded structure"; {solvers.model_name}'])
+    legend(["Unloaded structure"; {solvers.model_name}'], 'Location','best')
     xlabel('x [m]');
     ylabel('y [m]');
 
@@ -245,7 +232,7 @@ if output.plots(1)
     end
 
     title("Trajectory of B point")
-    legend({solvers.model_name})
+    legend({solvers.model_name}, 'Location','best')
     xlabel('u [\mum]');
     ylabel('v [\mum]');
 
@@ -265,7 +252,7 @@ if output.plots(1)
     end
 
     title("Error for U_x")
-    legend({solvers.model_name})
+    legend({solvers.model_name}, 'Location','best')
     xlabel('P_x [Pa]');
     ylabel('E_u [\mum]');
 
@@ -285,7 +272,7 @@ if output.plots(1)
     end
 
     title("Error for U_y")
-    legend({solvers.model_name})
+    legend({solvers.model_name}, 'Location','best')
     xlabel('P_y [Pa]');
     ylabel('E_v [\mum]');
 
@@ -324,7 +311,7 @@ if output.plots(2)
     plot(mNR, '-*', 'LineWidth', 2);
 
     title('Iteraction comparison')
-    legend(algorithm.correctors)
+    legend(algorithm.correctors, 'Location','best')
     xlabel('Models');
     ylabel('#iteraction');
 
@@ -355,7 +342,7 @@ if output.plots(2)
     plot(scale_factor * mNR, '-*', 'LineWidth', 2);
 
     title('Time comparison')
-    legend(algorithm.correctors)
+    legend(algorithm.correctors, 'Location','best')
     xlabel('Models');
     ylabel('Computational time [\mus]');
 
@@ -378,14 +365,14 @@ if output.plots(3)
 
     for solver_idx = 1:length(solvers)
 
-        plot(scale_factor * solvers(solver_idx).results(1).U(:, 1), ...
-            algorithm.P_delta(1) * 0:algorithm.N_steps-1, ...
+        plot(scale_factor * [0; solvers(solver_idx).results(1).U(:, 1)], ...
+            algorithm.P_delta(1) * (0:algorithm.N_steps), ...
             '-', 'LineWidth', 1);
 
     end
 
     title('P_x(U_x)')
-    legend({solvers.model_name})
+    legend({solvers.model_name}, 'Location','best')
     xlabel('U_x [\mum]');
     ylabel('P_x [Pa]');
 
@@ -397,14 +384,14 @@ if output.plots(3)
 
     for solver_idx = 1:length(solvers)
 
-        plot(scale_factor * solvers(solver_idx).results(1).U(:, 2), ...
-            algorithm.P_delta(2) * 0:algorithm.N_steps-1, ...
+        plot(scale_factor * [0; solvers(solver_idx).results(1).U(:, 2)], ...
+            algorithm.P_delta(2) * (0:algorithm.N_steps), ...
             '-', 'LineWidth', 1);
 
     end
 
     title('P_y(U_y)')
-    legend({solvers.model_name})
+    legend({solvers.model_name}, 'Location','best')
     xlabel('U_y [\mum]');
     ylabel('P_y [Pa]');
 
@@ -429,7 +416,6 @@ for fig_idx = sort(find(output.plots == true), 'descend')
 end
 
 clear points fig_idx
-
 
 
 %% Functions

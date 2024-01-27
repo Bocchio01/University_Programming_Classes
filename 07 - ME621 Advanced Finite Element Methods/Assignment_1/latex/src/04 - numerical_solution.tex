@@ -30,8 +30,8 @@ Instead, with the symbol $\vec{R}$ we are referring to the residual vector, that
     \label{eq:residual_vector}
 \end{equation}
 
-Since we will work in a discretized domain, we will use the subscript $n$ to refer to the current iteration, and the subscript $n+1$ to refer to the next iteration.
-So $[K_{t,n}]$ and $\vec{R_n}$ will simply be the tangent stiffness matrix and the residual vector evaluated at the current iteration with the associated values of $\vec{u}$.
+Since we will work in a discretized domain, we will use the subscript $n$ to refer to the previous iteration, and the subscript $n+1$ to refer to the current iteration.
+So $[K_{t,n}]$ and $\vec{R_n}$ will simply be the tangent stiffness matrix and the residual vector evaluated at the previous iteration referring to the displacement $\vec{u_n}$.
 
 \subsection{Euler}
 

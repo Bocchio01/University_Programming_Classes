@@ -25,8 +25,8 @@ By substituting in the force-displacement relationship \ref{eq:force_displacemen
     \end{Bmatrix}
     =
     \begin{Bmatrix}
-        \frac{\text{A}_1 \text{E}_1 \left(-\text{L}_1^2+(\text{L}_1+u)^2+v^2\right)}{2 \text{L}_1^2}+\frac{\text{A}_2 \text{E}_2 v \left(-\text{L}_2^2+(\text{L}_2+v)^2+u^2\right)}{2 \text{L}_2^2} \\
-        \frac{\text{A}_1 \text{E}_1 v \left(-\text{L}_1^2+(\text{L}_1+u)^2+v^2\right)}{2 \text{L}_1^2}+\frac{\text{A}_2 \text{E}_2 \left(-\text{L}_2^2+(\text{L}_2+v)^2+u^2\right)}{2 \text{L}_2^2}
+        \frac{\text{A}_1 \text{E}_1 \left(2 \text{L}_1 u+u^2+v^2\right)}{\text{L}_1^2}+\frac{\text{A}_2 \text{E}_2 u \left(v (2 \text{L}_2+v)+u^2\right)}{\text{L}_2^2} \\
+        \frac{\text{A}_1 \text{E}_1 v \left(2 \text{L}_1 u+u^2+v^2\right)}{\text{L}_1^2}+\frac{\text{A}_2 \text{E}_2 \left(v (2 \text{L}_2+v)+u^2\right)}{\text{L}_2^2}
     \end{Bmatrix}
     \label{eq:force_displacement_relationship_approximation_soft}
 \end{equation}
@@ -48,8 +48,8 @@ By substituting in the force-displacement relationship \ref{eq:force_displacemen
 
 \begin{equation}
     \begin{Bmatrix}
-        P_{x,approx} \\
-        P_{y,approx}
+        P_{x,approx,hard} \\
+        P_{y,approx,hard}
     \end{Bmatrix}
     =
     \begin{Bmatrix}

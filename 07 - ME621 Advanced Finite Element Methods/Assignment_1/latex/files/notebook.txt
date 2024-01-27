@@ -1,4 +1,4 @@
-In[234]:= Clear["Global`*"];
+Clear["Global`*"];
 plots := True;
 $Assumptions=Element[{L1,L2,A1,A2,E1,E2,u,v},Reals]&&L1>0&&L2>0&&A1>0&&A2>0&&E1>0&&E2>0;
 
@@ -8,9 +8,9 @@ E1-> 70*10^9,A1->10^-3,L1->3,
 E2->70*10^9,A2->10^-3,L2->0.5
 };
 
-domainPlotLimit:=0.01;
+domainPlotLimit:=0.001;
 
-In[239]:= (*Beam lenght*)
+(*Beam lenght*)
 l[u_,v_] ={
 {Sqrt[(L1+u)^2+v^2]},
 {Sqrt[u^2+(L2+v)^2]}
@@ -38,23 +38,23 @@ sinBeta[u_,v_]=u/l[u,v][[2, 1]];
 Pexact[u_,v_]={
 {Fint[u,v][[1, 1]]*cosAlpha[u,v]+Fint[u,v][[2, 1]]*sinBeta[u,v]},
 {Fint[u,v][[1, 1]]*sinAlpha[u,v]+Fint[u,v][[2, 1]]*cosBeta[u,v]}
-}; 
+};
 
 (*Defining the taylor expansion series*)
 Ptaylor[x_, y_, taylorOrder_] := Normal @ Series[Pexact[u, v] /. Thread[{u, v} -> {0, 0} + t {x, y}], {t, 0, taylorOrder}] /. t -> 1;
 
 (*Approximated models*)
 PapproximatedSoft[u_,v_]={
-{Fint[u,v][[1, 1]]*1+Fint[u,v][[2, 1]]*v},
+{Fint[u,v][[1, 1]]*1+Fint[u,v][[2, 1]]*u},
 {Fint[u,v][[1, 1]]*v+Fint[u,v][[2, 1]]*1}
-}; 
+};
 
 PapproximatedHard[u_,v_]={
 {Fint[u,v][[1, 1]]*1+Fint[u,v][[2, 1]]*0},
 {Fint[u,v][[1, 1]]*0+Fint[u,v][[2, 1]]*1}
-}; 
+};
 
-In[250]:= (*Final results*)
+(*Final results*)
 MatrixForm[Pexact[u,v]]
 MatrixForm[Ptaylor[u,v,1]]
 MatrixForm[Ptaylor[u,v,2]]
@@ -142,7 +142,7 @@ WriteMatlab[PapproximatedHard[u,v], f, "Fint_approximated_hard"];
 
 Close[f];
 In[280]:= Plot[Fint[x,0][[1,1]]/. problemDatas,{x,0 ,10^5}]
-Out[280]= 
+Out[280]=
 In[289]:= TeXForm[D[Ptaylor[u,v,1], {{u,v}}]]
 Out[289]//TeXForm=
 \left(

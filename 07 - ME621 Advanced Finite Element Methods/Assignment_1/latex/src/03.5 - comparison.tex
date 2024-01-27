@@ -4,7 +4,7 @@
 Now, it can be interesting to compare the results obtained with the different linearization/approximation described in the previous sections.
 For simplicity, we will perform this type of error analysis only for the force $P_x = f(\vec{u})$, but conceptually it would be the same for the force $P_y = f(\vec{u})$.
 
-Since the following doesn't want to be a formal error analysis, we will not use any formal error measure, but we will simply plot the difference between the approximated / linearized solutions and the exact one, that is:
+Since the following discussion doesn't want to be a formal error analysis, we will not use any formal error measure, but we will simply plot the difference between the approximated / linearized solutions and the exact one, that is:
 
 \begin{equation}
     z(u,v) = \text{Error}[P_x(u,v)] = P_{x,approximated/linearized}(u,v) - P_{x,exact}(u,v)
@@ -12,8 +12,9 @@ Since the following doesn't want to be a formal error analysis, we will not use 
 
 In this way, the error analysis can be performed graphically, by plotting a 3D surface of the error in the space $(u,v,z)$.
 
-Moreover, since all our linearized / approximated solutions were obtained in the neighborhood of the point $\vec{u} = \vec{0}$ (because of the hypothesis of small displacements), we will limit our plot to a domain of $(u,v) \in [-0.01, 0.01] \times [-0.01, 0.01]$
-\footnote{At this point the choice of the domain dimension has been done per intuition. A post analysis with the numerical result at hand, would show that this domain is far too large with respect to the solutions effective domain $(\text{Factor}=10^2)$.}.
+Moreover, since all our linearized / approximated solutions were obtained in the neighborhood of the point $\vec{u} = \vec{0}$ (because of the hypothesis of small displacements), we will limit our plot to a domain
+\footnote{At this point, the choice of domain size was made based on a pure intuition of the final value of the displacement}
+of $(u,v) \in [-0.001, 0.001] \times [-0.001, 0.001]$.
 
 \begin{figure}[H]
     \centering

@@ -6,7 +6,9 @@
 \usepackage{titlesec}
 \usepackage{soul}
 \usepackage{csvsimple}
-% \usepackage{footnote}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 \usetikzlibrary{calc,patterns,angles,quotes}
 \setlength{\parindent}{0pt}
@@ -37,16 +39,18 @@ pdfauthor={Tommaso Bocchietti}
 \tableofcontents
 \listoffigures
 \listoftables
-\pagebreak
+\clearpage
 
 \input{src/01 - requests}
 \input{src/02 - methodology}
 \input{src/03 - solution}
 \input{src/04 - numerical_solution}
 \input{src/05 - implementation}
+
+\clearpage
 \input{src/06 - results}
 
-
+\clearpage
 \appendix
 \section{Mathematica code}
 \label{sec:appendix}
@@ -59,6 +63,6 @@ Here follows the \texttt{Mathematica} notebook used for symbolic analysis of the
     caption=Mathematica notebook used for symbolic analysis of the equations.,
     firstline=1,
     lastline=56
-]{notebook.txt}
+]{files/notebook.txt}
 
 \end{document}

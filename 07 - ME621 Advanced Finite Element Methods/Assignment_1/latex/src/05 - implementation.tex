@@ -1,8 +1,8 @@
 \section{Implementation}
 \label{sec:implementation}
 
-For each of the previous models (\ref{eq:force_displacement_relationship},\ref{eq:taylor_series_expansion_order_1}, \ref{eq:taylor_series_expansion_order_2}, \ref{eq:taylor_series_expansion_order_3}, \ref{eq:force_displacement_relationship_approximation_soft}, \ref{eq:force_displacement_relationship_approximation_hard}) we can then compute the tangent stiffness matrix and the internal force vector as function of $\vec{u}$.
-By applying the definition \ref{eq:tangent_stiffness_matrix} and \ref{eq:residual_vector} we are able to basically compute for each model two functions $f_{K_t}(\vec{u})$ and $f_{R}(\vec{u})$ that will return the tangent stiffness matrix and the residual vector evaluated at the current iteration with the associated values of $\vec{u}$.
+For each of the previous models (\ref{eq:force_displacement_relationship},\ref{eq:taylor_series_expansion_order_1},\ref{eq:taylor_series_expansion_order_2},\ref{eq:taylor_series_expansion_order_3},\ref{eq:force_displacement_relationship_approximation_soft},\ref{eq:force_displacement_relationship_approximation_hard}) we can then compute the tangent stiffness matrix and the internal force vector as function of $\vec{u}$.
+By applying the definition \ref{eq:tangent_stiffness_matrix} and \ref{eq:residual_vector} we are able to basically compute for each model two functions $f_{K_t}(\vec{u})$ and $f_{R}(\vec{u})$ that will return the tangent stiffness matrix and the residual vector evaluated at the current iteration referring to the displacement $\vec{u_n}$.
 
 As an example, we report the functions $f_{K_t}(\vec{u})$ and $f_{R}(\vec{u})$ for the model \ref{eq:taylor_series_expansion_order_1}:
 
@@ -44,10 +44,10 @@ As an example, we report the functions $f_{K_t}(\vec{u})$ and $f_{R}(\vec{u})$ f
     \label{eq:internal_force_vector_taylor_series_expansion_order_1}
 \end{equation}
 
-When it comes to \texttt{MATLAB} code, the functions $f_{K_t}(\vec{u})$ and $f_{F_{int}}(\vec{u})$ are implemented as follows:
+When it comes to \texttt{MATLAB} code, the functions $f_{K_{t,n}}(\vec{u_n})$ and $f_{F_{int,n}}(\vec{u_n})$ are implemented as follows:
 
 \begin{lstlisting}[language=Matlab]
-    function [Kt, Fint] = model_taylor_1(U, geometry)
+function [Kt, Fint] = model_taylor_1(U, geometry)
 
     [L1, A1, E1, L2, A2, E2] = decompose_geometry(geometry); % From a struct to variables
     [u, v] = decompose_u(U); % From a vector to variables
@@ -62,5 +62,5 @@ When it comes to \texttt{MATLAB} code, the functions $f_{K_t}(\vec{u})$ and $f_{
         A2.*E2.*L2.^(-1).*v
         ];
 
-    end
+end
 \end{lstlisting}
