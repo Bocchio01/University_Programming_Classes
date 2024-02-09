@@ -1,0 +1,3 @@
+[submodule "06 - ME663 Computational Fluid Dynamics/01 - Lid driven cavity incompressible flow/src/.doxygen/doxygen-awesome-css"]
+	path = 06 - ME663 Computational Fluid Dynamics/01 - Lid driven cavity incompressible flow/src/.doxygen/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git
