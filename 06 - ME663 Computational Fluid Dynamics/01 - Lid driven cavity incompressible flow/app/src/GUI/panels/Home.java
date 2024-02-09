@@ -14,7 +14,7 @@ public class Home extends TwoRows implements Interfaces.UIPanel {
     private GUI gui;
     private MainModel mainModel;
 
-    private JButton buttonToSimLauncher = new Widget.Button("Setup or launch simulation");
+    private JButton buttonToSimLauncher = new Widget.Button("Run new simulation");
     private JButton buttonToSimResults = new Widget.Button("View past simulations results");
 
     public Home(MainModel mainModel) {
