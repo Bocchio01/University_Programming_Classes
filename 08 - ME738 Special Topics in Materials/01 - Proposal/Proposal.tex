@@ -1,0 +1,45 @@
+\documentclass[titlesec]{araproposal}
+
+\hypersetup{
+pdftitle={ME738 - Special Topics in Materials},
+pdfsubject={Project proposal},
+pdfauthor={Tommaso Bocchietti}
+}
+
+\makeglossaries
+\newacronym{mems}{MEMS}{Micro Electromechanical Systems}
+\newacronym{nems}{NEMS}{Nano Electromechanical Systems}
+
+\title{Clock source technologies: state of the art and applications}
+
+\piauthor{Tommaso Bocchietti, Department of Mechanical \& Mechatronics Engineering, University of Waterloo}
+
+\contact{Tommaso Bocchietti, \email{tbocchie@uwaterloo.ca}}
+\date{\today}
+
+\newcommand{\semph}[1]{\textbf{\textit{#1}}}
+\newcommand{\para}[1]{\textbf{#1.}\ }
+
+\begin{document}
+
+\maketitle
+
+\abstract{
+  Project proposal for the course \textit{ME738 - Special Topics in Materials} at the University of Waterloo.
+  The project aims to investigate the state of the art of clock source technologies, with a focus on the most recent advancements in the field and their potential applications.
+}
+
+\keywords{Clock source technologies, Crystal oscillators, \acrshort{mems} resonators, \acrshort{mems} Atomic Clocks}
+
+
+\input{src/01 - introduction.tex}
+\input{src/02 - methods.tex}
+\input{src/03 - expected_results.tex}
+
+\appendix
+\printglossary[type=\acronymtype]
+
+\bibliographystyle{plainurl}
+\bibliography{ref}
+
+\end{document}

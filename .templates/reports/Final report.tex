@@ -1,0 +1,54 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal Article
+% LaTeX Template
+% Version 2.0 (February 7, 2023)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Author:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/)
+%
+% NOTE: The bibliography needs to be compiled using the biber engine.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% https://www.latextemplates.com/template/journal-article
+
+\documentclass[a4paper,10pt,unnumberedsections,twoside]{LTJournalArticle}
+
+\addbibresource{ref.bib}
+
+\runninghead{Short title}
+
+\footertext{Footer text}
+
+\setcounter{page}{1}
+
+\title{Report title}
+
+\author{
+	Tommaso Bocchietti\textsuperscript{1,2}\thanks{\textbf{Final revision:} April ??, 2024}
+}
+
+\date{\footnotesize
+\textsuperscript{\textbf{1}}Department of Mechanical \& Mechatronics Engineering, University of Waterloo\\
+\textsuperscript{\textbf{2}}Dipartimento di Meccanica, Politecnico di Milano
+}
+
+\renewcommand{\maketitlehookd}{
+	\begin{abstract}
+		Abstract text.
+	\end{abstract}
+}
+
+\begin{document}
+
+\maketitle
+
+\printbibliography
+
+\end{document}
