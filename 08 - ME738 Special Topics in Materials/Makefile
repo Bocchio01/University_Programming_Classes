@@ -25,3 +25,7 @@ clean:
 	del /Q $(DIR)\*.fdb_latexmk
 	del /Q $(DIR)\*.fls
 	del /Q $(DIR)\*.gz
+	del /Q $(DIR)\*.ist
+	del /Q $(DIR)\*.glo
+	del /Q $(DIR)\*.bbl
+	del /Q $(DIR)\*.acn
