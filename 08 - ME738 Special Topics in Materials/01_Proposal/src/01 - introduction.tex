@@ -1,35 +1,23 @@
 \section{Introduction}
+\label{sec:introduction}
 
 Every electronic device requires the use of a timing system (usually referred as clock) that sets the reference for the operation of the device.
-This timing system is implemented through the use of various electronic components such as clock source, phase comparator, frequency dividers\dots.
+This timing system is implemented through the use of various electronic components such as clock source, phase comparator, frequency dividers\dots
 
-The aim of this project is to investigate the state of the art of clock sources technologies, with a focus on the most recent advancements in the field and their potential applications.
-In particular, the project will focus on the following topics:
+The aim of this project is to investigate deeply the \acrfull{csac} source technology.
 
-\begin{itemize}
-    \item \semph{Crystal oscillators} (optional) : electric oscillator type circuit that uses a piezoelectric resonator, a crystal, as its frequency-determining element (\href{https://en.wikipedia.org/wiki/Crystal_oscillator#Terminology}{Wikipedia definition}).
-    \item \semph{\acrshort{mems} resonators} (main focus) : small electromechanical structures that vibrate at high frequencies (\href{https://en.wikipedia.org/wiki/Microelectromechanical_system_oscillator#Resonators}{Wikipedia definition}).
-    \item \semph{\acrshort{mems} Atomic Clocks} (time permitting): the combination of a \acrshort{mems} system fabrication with atomic clocks for small, cheap, low-power devices \cite{KNAPPE2008571}.
-\end{itemize}
+\acrshort{csac} is a type of atomic clock that is designed to be small and low-power, making it suitable for use in portable and battery-powered applications.
+% It is based on the principle of coherent population trapping, which is a quantum interference effect that occurs in a three-level atomic system.
+Its capability to provide a stable and accurate time reference makes it the perfect candidate for a wide range of applications, including satellite navigation, telecommunications, and military systems.
 
 \begin{figure}[H]
-    \begin{minipage}[b]{0.30\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/SAW_oscillator}
-        \caption{Schematic diagram of SAW resonator \cite{mi10060349}}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.30\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/MEMS_resonators}
-        \caption{MEMS oscillator \cite{KNAPPE2008571}}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.30\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/atomic_clock_chip_scale}
-        \caption{Chip-scale atomic clock (CSAC) \cite{8956703}}
-    \end{minipage}
+    \centering
+    \includegraphics[width=.5\textwidth]{img/first_atomic_clock}
+    \caption{\href{https://www.nist.gov/news-events/news/2004/08/nist-unveils-chip-scale-atomic-clock}{NIST chip-scale atomic clock.}}
 \end{figure}
 
-Topics are mostly indicative and will be refined during the project development also based on professor's feedback, affinity with the course subjects, and personal interests.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\textwidth]{img/cesium_atomic_clock_scheme}
+    \caption{\href{https://timeandnavigation.si.edu/multimedia-asset/how-does-the-nist-7-atomic-clock-work}{NIST-7 atomic clock scheme, credit Bruce Morser}}
+\end{figure}
