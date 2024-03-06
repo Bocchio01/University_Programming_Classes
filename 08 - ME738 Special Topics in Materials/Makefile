@@ -1,11 +1,16 @@
-.PHONY: proposal ppt clean
+.PHONY: proposal Motivations ppt clean
 
-all: proposal clean
+all: Motivations clean
 
 CC = xelatex
 
 proposal: 01_Proposal/Proposal.tex
 	$(eval DIR := 01_Proposal)
+	$(CC) -output-directory=$(DIR) -include-directory=$(DIR)/ $<
+	$(CC) -output-directory=$(DIR) -include-directory=$(DIR)/ $<
+
+Motivations: 02_Motivations/Motivations.tex
+	$(eval DIR := 02_Motivations)
 	$(CC) -output-directory=$(DIR) -include-directory=$(DIR)/ $<
 	$(CC) -output-directory=$(DIR) -include-directory=$(DIR)/ $<
 

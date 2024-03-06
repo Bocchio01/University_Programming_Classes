@@ -14,4 +14,5 @@ In particular, the following documents are included:
 
 - [Project proposal](01%20-%20Proposal.pdf)
 <!-- - [Final project report](./Final%20Project%20Report.pdf) -->
-
+<!-- Vapour Cell technologies not very stable due to thermal alteraction  -->
+<!-- Cold Athom tech much more stable but immature yet -->
