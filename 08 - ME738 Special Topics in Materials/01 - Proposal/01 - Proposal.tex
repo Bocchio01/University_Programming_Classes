@@ -1,0 +1,53 @@
+\documentclass[titlesec]{araproposal}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[font={small,it}]{caption}
+
+\hypersetup{
+pdftitle={ME738 - Special Topics in Materials},
+pdfsubject={Project proposal},
+pdfauthor={Tommaso Bocchietti}
+}
+
+\makeglossaries
+\newacronym{mems}{MEMS}{Micro Electromechanical Systems}
+\newacronym{nems}{NEMS}{Nano Electromechanical Systems}
+\newacronym{csac}{CSAC}{Chip-Scale Atomic Clock}
+
+\bibliographystyle{plainurl}
+
+\newcommand{\semph}[1]{\textbf{\textit{#1}}}
+\newcommand{\para}[1]{\textbf{#1.}\ }
+
+\title{Chip-Scale Atomic Clock Source Technology}
+\piauthor{Tommaso Bocchietti, Department of Mechanical \& Mechatronics Engineering, University of Waterloo}
+\contact{Tommaso Bocchietti, \email{tbocchie@uwaterloo.ca}}
+\date{March 4, 2024}
+
+\begin{document}
+
+\maketitle
+
+\abstract{
+  Given the increase amount of applications requiring precise timekeeping, the demand for high-performance and low-cost clock sources has grown significantly.
+  The constraints over the size, weight, and power consumption of modern electronics have led to the development of \acrfull{mems} \& \acrfull{nems}.
+
+  In this project, we aim to investigate a particular class of \acrshort{mems} composed by the \textit{\acrfull{csac}}.
+
+  The focus will be mainly on the principles and the engineering of these devices, and their potential applications.
+  By doing so, we will also underline the motivations behind the use of these devices, and how they differ from the traditional clock sources.
+}
+
+\keywords{\acrfull{csac}, Principles, Engineering, Applications, State-of-the-art}
+
+\input{src/01 - introduction.tex}
+\input{src/02 - methods.tex}
+\input{src/03 - expected_results.tex}
+
+\appendix
+
+\printglossary[type=\acronymtype]
+\bibliography{references}
+
+\end{document}
