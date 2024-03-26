@@ -1,0 +1,45 @@
+\section{Conclusion}
+
+\begin{frame}{Choice the right technology}
+
+    The performance of an atomic clock can be evaluated (simplistically) as:
+
+    \begin{equation}
+        \text{Better performance} \Leftrightarrow \text{Higher SWaP \& Cost}
+    \end{equation}
+
+    \vspace{10pt}
+
+    Both \textbf{MODR}-based\footnotemark[1] and \textbf{CPT}-based\footnotemark[2] have comparable performance, but different SWaP and cost:
+
+    \begin{itemize}
+        \item \textbf{CSAC (MODR)}: cheaper, but larger and more power hungry.
+        \item \textbf{CSAC (CPT)}: more expensive, but smaller and more power efficient.
+    \end{itemize}
+
+    \vspace{10pt}
+
+    The right balance between performance, size, power consumption and cost depends on the specific application.
+
+    % \begin{table}
+    %     \resizebox{\textwidth}{!}{
+    %         \begin{tabular}{ll|lllllllllll}
+    %             \hline
+    %             \textbf{Vendor} & \textbf{Product} & \textbf{Type} & \textbf{ADEV} & \textbf{L} & \textbf{Aging} & \textbf{Retrace} & \textbf{Tmin} & \textbf{Tmax} & \textbf{Tempco} & \textbf{Power} & \textbf{Weight} & \textbf{Size} \\
+    %             ~               & ~                & ~             & (1 s)         & (10 Hz)    & (month)        & ~                & (°C)          & (°C)          & ~               & (W)            & (kg)            & (cm\^3)       \\
+    %             \hline
+    %             Accubeat        & NAC              & CSAC          & 2,00E-10      & -86        & 3,00E-10       & ~                & -20           & 65            & 2,00E-09        & 1,20           & 0,075           & 32            \\
+    %             Chengdu Spaceon & CPT              & CSAC          & 2,00E-10      & -90        & 9,00E-10       & 5,00E-11         & -45           & 70            & 5,00E-10        & 1,60           & 0,045           & 24            \\
+    %             Teledyne        & TCSAC            & CSAC          & 3,00E-10      & -85        & 3,00E-10       & 3,00E-10         & -10           & 60            & 1,00E-09        & 0,18           & 0,042           & 23            \\
+    %             Microsemi       & SA45.s           & CSAC          & 3,00E-10      & -70        & 9,00E-10       & 5,00E-10         & -10           & 70            & 1,00E-09        & 0,12           & 0,035           & 17            \\
+    %             Microsemi       & SA65             & CSAC          & 3,00E-10      & -64        & 9,00E-10       & 5,00E-10         & -40           & 80            & 3,00E-10        & 0,12           & 0,035           & 16            \\
+    %             \hline
+    %         \end{tabular}
+    %     }
+    %     \caption{Summary of current atomic frequency standard product key performance parameters}
+    % \end{table}
+
+    \footnotetext[1]{Microwave Optical Double-Resonance}
+    \footnotetext[2]{Coherent Population Trapping}
+
+\end{frame}

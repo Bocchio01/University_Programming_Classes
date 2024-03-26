@@ -27,10 +27,33 @@
 
 \maketitle
 
+\begin{frame}{Agenda}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+\begin{frame}{Recap from "Technology comparison"}
+
+    A CSAC that is better than any other doesn't exist.
+
+    \vspace{10pt}
+
+    In general, performance of the clock are proportional to its SWaP (Size Weight and Power) and cost.
+
+    \vspace{10pt}
+
+    The choice of the clock depends on the application.
+
+\end{frame}
+
+\input{src/01-GNSS}
+\input{src/02-OBS}
+\input{src/03-military}
+\input{src/04-conclusion}
 
 \appendix
 
-% \include{src/06 - extra_slides}
+\include{src/05-extra_slides}
 
 \begin{frame}[allowframebreaks]{References}
     \nocite{*}

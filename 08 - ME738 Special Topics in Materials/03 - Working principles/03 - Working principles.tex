@@ -1,0 +1,58 @@
+\documentclass[10pt]{beamer}
+
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{pgfplots}
+\usepackage{graphics}
+\usepackage{braket}
+
+\usepgfplotslibrary{dateplot}
+\pdfstringdefDisableCommands{\def\translate#1{#1}}
+\geometry{paperwidth=140mm, paperheight=105mm}
+\usetheme{metropolis}
+\bibliographystyle{abbrv}
+\setbeamertemplate{frame footer}{ME738 - Special Topics in Materials}
+
+\renewcommand{\footnotesize}{\fontsize{7pt}{8pt}\selectfont}
+
+\title{Chip Scale Atomic Clocks Sources}
+\subtitle{Working principles}
+\date{March 20, 2024}
+\author{Tommaso Bocchietti}
+\institute{University of Waterloo}
+\titlegraphic{\hfill\includegraphics[height=1.5cm]{pdf/UniversityOfWaterloo_logo_horiz_pms.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Agenda}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+\include{src/01-toolbox}
+\include{src/02-block_diagram}
+\include{src/03-physics_package}
+\include{src/04-control_loop}
+\include{src/05-local_oscillator}
+
+\appendix
+
+\include{src/06-extra_slides}
+
+\begin{frame}[allowframebreaks]{References}
+    \nocite{*}
+    \bibliography{references}
+\end{frame}
+
+\begin{frame}[standout]
+    Questions?
+\end{frame}
+
+\begin{frame}[standout]
+    Thank you!
+\end{frame}
+
+\end{document}

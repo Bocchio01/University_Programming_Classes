@@ -18,7 +18,7 @@
 
 \title{Chip Scale Atomic Clocks Sources}
 \subtitle{Technology comparison}
-\date{March 5, 2024}
+\date{March 27, 2024}
 \author{Tommaso Bocchietti}
 \institute{University of Waterloo}
 \titlegraphic{\hfill\includegraphics[height=1.5cm]{pdf/UniversityOfWaterloo_logo_horiz_pms.pdf}}
@@ -27,10 +27,30 @@
 
 \maketitle
 
+\begin{frame}{Agenda}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+\begin{frame}{Recap from "Working principles"}
+
+    General idea: leverage the intrinsic stability of atomic transitions to discipline an oscillating circuit based on a vibrating quartz crystal.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.9\textwidth]{pdf/CSAC-scheme.pdf}
+        \caption{Chip Scale Atomic Clock scheme.}
+    \end{figure}
+
+\end{frame}
+
+\include{src/01-key_parameters}
+\include{src/02-technology_comparison}
+\include{src/03-conclusion}
 
 \appendix
 
-% \include{src/06 - extra_slides}
+\include{src/04-extra_slides}
 
 \begin{frame}[allowframebreaks]{References}
     \nocite{*}
