@@ -1,13 +1,11 @@
 \section{Key Parameters}
 
-% Short term stability -> Allan deviation
-% Long term stability -> Drift -> Holdover capabilities
-%
-
 \begin{frame}{Stability and Accuracy}
 
-    The second, symbol $s$, is the SI unit of time.
-    It is defined by taking the fixed numerical value of the $Cs$ frequency $\Delta \nu_{Cs}$, the unperturbed ground-state hyperfine transition frequency of the $^{133}Cs$ atom, to be $9.192.631.770$ when expressed in the unit $Hz$, which is equal to $s^{-1}$.
+    \textit{
+        The second, symbol $s$, is the SI unit of time.
+        It is defined by taking the fixed numerical value of the $Cs$ frequency $\Delta \nu_{Cs}$, the unperturbed ground-state hyperfine transition frequency of the $^{133}Cs$ atom, to be $9.192.631.770$ when expressed in the unit $Hz$, which is equal to $s^{-1}$.
+    }
 
     \begin{figure}
         \centering
@@ -27,13 +25,13 @@
 
             Allan deviation is a measure of the stability of a frequency standard.
 
-            \begin{equation}
+            \begin{equation*}
                 y(t) = \frac{f(t) - f_0}{f_0}
-            \end{equation}
+            \end{equation*}
 
-            \begin{equation}
-                \sigma_y(\tau) = \sqrt{\frac{1}{2(M-1)} \sum_{i=1}^{M-1} (\bar{y}_{i+1} - \bar{y}_{i})^2}
-            \end{equation}
+            \begin{equation*}
+                \sigma_y(\tau) = \sqrt{\frac{1}{2M} \sum_{i=2}^{M} (\bar{y}(\tau)_{i} - \bar{y}(\tau)_{i-1})^2}
+            \end{equation*}
 
         \end{column}
 
@@ -64,7 +62,7 @@
     It captures the frequency \textbf{Fast Noise (mainly caused by the Local Oscillator (LO))} \& the Slow Drift (next slide)
 
     \footnotetext{
-        $\sigma_y(\tau) = 3\times10^{-9}$ at $\tau = 1s$ is equivalent to an instability in frequency between two observations 1 second apart with a (RMS) value of $3\times10^{-9}$.
+        $\sigma_y(\tau = 1s) = 3\times10^{-9}$ is equivalent to an instability in frequency between two observations 1 second apart with a (RMS) value of $3\times10^{-9}$.
         For a $10 MHz$ clock, this would be equivalent to $30 mHz$ RMS movement.
     }
 
@@ -125,8 +123,7 @@
         % \caption{Drift of an atomic clock.}
     \end{figure}
 
-    \footnotetext{Example: Drift of $10^{-10}$ means that the frequency of the oscillator changes by $10^{-10}$ per second.}
-
+    % \footnotetext{Example: Drift of $10^{-10}$ means that the frequency of the oscillator changes by $10^{-10}$ per second.}
     \footnotetext{MJD: Modified Julian Dates, are a count of days since November 17, 1858.}
 
 \end{frame}
