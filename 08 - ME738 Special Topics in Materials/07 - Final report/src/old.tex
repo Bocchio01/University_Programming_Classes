@@ -1,0 +1,55 @@
+\paragraph{More in depth}
+
+Dipole transition selection rules:
+\begin{itemize}
+    \item Excitation by a circularly polarized light $\sigma^+$: $\Delta m_f = +1$
+    \item Spontaneous emission: $\Delta m_f = 0, \pm 1$, but on average $\Delta m_f = 0$
+\end{itemize}
+
+In the end, we are sure that pumping will force population inversion generating excess in the $F=2$ state.
+
+The microwave cavity on the other hand (if in complete resonance with the transition between the two hyperfine states) will induce a transition so that the population will be inverted again.
+
+This result in the possibility for the reference cell to absorb again the circularly polarized light, and the trasmissibility of the light will be at a minimum.
+
+\paragraph{Problem so far with the double resonance approach - Power consumption}
+
+All components described so far has to be kept at a constant temperature and pressure to avoid any shift in the frequency of the transition.
+This means that our system must include stabilization in temperature driven by a oven controlled sensor and heater.
+The power consumption of this system is distributed as follows:
+
+\begin{itemize}
+    \item $10\%$: Lamp Exciter
+    \item $10\%$: RF Excitation
+    \item $10\%$: Electronics
+    \item $70\%$: Thermal stabilization oven
+\end{itemize}
+
+It's clear how the oven and the thermal stability is the most power consuming part of the entire system.
+
+\paragraph{Problem so far with the double resonance approach - Size}
+
+Another problem is given by the minimum theoretical size of the system.
+The RF cavity must be at least half the wavelength of the microwave frequency.
+This means that for a microwave frequency of $6.8GHz$ we need a cavity of at least $L_{min} = \frac{\lambda}{2} = \frac{c}{2f} = \frac{3 \cdot 10^8}{2 \cdot 6.8 \cdot 10^9} = 22mm$.
+
+\paragraph{Problem so far with the double resonance approach - Stark shift}
+
+Because of possible electric field, the energy levels of the atoms can be shifted (broadened).
+This means that even if our microwave frequency is exactly the one of the transition, the energy levels of the atoms can be shifted so that the resonance is not perfect and the absorption of the light is not at a minimum.
+Basically, the position of the dip in the transmissivity is shifted.
+
+\paragraph{Benefits of CPT over double resonance}
+
+By using the CPT technique, we can avoid the use of the microwave cavity and the filter cell of $Rb^{85}$.
+This means that we can avoid the power consumption of the oven and the thermal stabilization, and we can avoid the size of the microwave cavity.
+In the end, we can have a system that is much smaller and with a much lower power consumption.
+
+The only problem here is that our system must be able to generate a very stable and accurate single-mode narrow-linewidth laser.
+The less precise the laser, the less precise the peak in the transmissivity plot (and possible shifted to the wrong frequency).
+However, once we have the laser, we can also think of using more than one just element.
+In fact, we should opt to pick an element with higher frequency of the transition, so that we can have a more precise peak in the transmissivity plot (as \acrfull{cs} for example).
+
+\paragraph{Role of buffer gas mixture}
+
+The buffer gas mixture is used to increase the lifetime of the atoms in the excited state.

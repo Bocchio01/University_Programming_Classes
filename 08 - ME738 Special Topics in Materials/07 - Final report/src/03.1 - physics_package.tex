@@ -1,0 +1,16 @@
+\subsection{\acrfull{pp}}
+\label{subsec:physics_package}
+
+The \acrfull{pp} is the core component of the \acrshort{csac}, where the atomic excitation and interrogation take place.
+
+Its function is to compare the frequency of the local oscillator with the atomic transition frequency and generate a signal that measures the difference between the two.
+From a logical point of view, a generic PP receive as input the local oscillator frequency, and generate as output an electric signal that is sent to the control loop.
+Electric power to excite the atoms and thermal power to maintain a steady temperature are also provided to the PP to ensure proper operation.
+
+One of the keys in the stability of a \acrshort{csac}, lies in the capacity of the PP to generate a stable and accurate source of energy required for the excitation of the atoms, which leads to a stable and accurate signal for the control loop.
+
+As we have mentioned at the beginning of this section (Section \ref{sec:working_principles}), \acrshort{csacs} can be divided into two main families based on the atomic element they use and the operating principle they follow.
+In the following subsections (Subsections \ref{sssec:MODR} \& \ref{sssec:CPT}), we will delve into the specific architecture for the PP of the two main families of \acrshort{csacs}, namely the one based on \acrfull{modr} and the one based on \acrfull{cpt}.
+
+\input{src/03.1.1 - MODR.tex}
+\input{src/03.1.2 - CPT.tex}

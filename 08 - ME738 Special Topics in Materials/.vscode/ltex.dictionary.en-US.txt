@@ -10,3 +10,5 @@ hyperfine
 Trilateration
 trilateration
 combinators
+hyperdefine
+detuned
