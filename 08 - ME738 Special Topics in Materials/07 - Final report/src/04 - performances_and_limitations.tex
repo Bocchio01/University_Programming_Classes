@@ -1,0 +1,32 @@
+\section{Performances and Limitations}
+\label{sec:performances_and_limitations}
+
+Now that we have defined the core concept and individual components of a CSAC, we can proceed evaluating its performance and limitations using the metrics defined in Section \ref{sec:objective_metrics}.
+
+In order to do so, we will consider and analyze the main disturbances effects that affect the overall performances, see what are the current solutions proposed and what they imply in terms of limitations and trade-offs.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth, max width=\linewidth]{img/allan-deviation-graph.png}
+    \caption{
+        Allan deviation plot $\sigma_y(\tau)$ for different clock type sources
+        (%
+        \textcolor[HTML]{0000FF}{\acrfull{cs} Beam Standard},
+        \textcolor[HTML]{FF0000}{\acrfull{rb} vapor cell clock},
+        \textcolor[HTML]{00FF00}{Oven-controlled crystal oscillator (OCXO)},
+        \textcolor[HTML]{000000}{Temperature-compensated crystal oscillator (TCXO)}%
+        ). Source \cite{Knappe}.
+    }
+    \label{fig:allan_deviation_graph}
+\end{figure}
+
+In Figure \ref{fig:allan_deviation_graph}, it's visible a comparison of the Allan deviation $\sigma_y(\tau)$ for different clock sources.
+Medium to long-term stability is represented, ranging from an average $\tau$ scale of $10^{0}$ to $10^{6}$ seconds, and is clearly visible how atomic clocks (both the Rb vapor cell and the Cs beam standard) outperform crystal oscillators in terms of stability.
+However, it's important to notice that the Cs beam standard isn't a CSAC, but a traditional table-size atomic clock.
+And also the Rb vapor cell clock represented in the plot is a Miniature Atomic Clock (MAC), which is larger and more power-hungry than a CSAC.
+Typically, a CSAC is expected to have a stability $\sigma_y(\tau=1s) \approx 10^{-10}$, and the flicked floor at around $\tau = 10^4s$, positioning itself in between the TCXO and the OCXO in the short to medium-term stability range and outperforming them in the medium to long-term stability range.
+
+\input{src/04.1 - short_term_stability.tex}
+\input{src/04.2 - medium_term_stability.tex}
+\input{src/04.3 - long_term_stability.tex}
+\input{src/04.4 - stability_vs_SWaP.tex}

@@ -1,0 +1,91 @@
+\subsection{Medium-term frequency stability}
+\label{subsec:medium_term_stability}
+
+Medium-term stability, instead, is one of the key metrics for all the applications where a CSAC is used.
+
+It can be computed as stated in Equation \ref{eq:allan_deviation_medium} and is governed mostly by the stability of atomic interactions and energy levels.
+Many factors can affect this type of stability, such as temperature of the environment, magnetic field, and quality of the excitation source.
+
+Generally, we can expect to have an increasing stability from $10^{-10} @ \tau=1s$ to $10^{-12} @ \tau=10^4s$.
+However, medium-term stability is strictly dependent on the quality of the physics package, its components and the design choices made to mitigate the disturbances.
+The main disturbances together with some possible solutions (that always imply trade-offs) are listed below.
+
+
+\paragraph{Rubidium vs. Cesium}
+
+As we have seen, both \acrshort{rb} and \acrshort{cs} can be used as the atomic element inside the reference cell of a \acrshort{csac}.
+
+However, it has to be noted that the splitting gap in the two hyperfine ground levels is not the same for the two elements.
+In fact, comparing \ref{itm:Rb-I} and \ref{itm:Cs-I} transitions, we can see that the frequency of the \acrshort{rb} transition is around $6.8GHz$, while the \acrshort{cs} transition is around $9.2GHz$.
+By recalling Equation \ref{eq:allan_deviation_medium} for the medium-term stability, we can observe that the stability is inversely proportional to the line quality factor $Q$.
+Being $Q = \frac{\nu_0}{\Delta\nu}$, we can understand that the higher the frequency of the transition, the higher the stability of the clock.
+So, in theory, a \acrshort{cs}-based clock should have a better stability than a \acrshort{rb}-based one.
+
+On the other hand, the \acrshort{rb} has a simpler and easier to control pumping system that has a better coupling efficiency with the atomic resonance frequency with respect to the diode laser used in the \acrshort{cs} clock.
+
+For this reason, the performance of the two clocks is quite similar, with the \acrshort{cs} clock being slightly better in terms of power consumption and size, but with a more complex and expensive physics package.
+
+
+\paragraph{Gas pressure and composition inside the reference cell}
+
+Collision with untreated interior walls of the reference cell can depolarize the spin of electrons, forcing them to return to the ground state.
+For this reason, the signal in output from the Physical Package will be reduced ($SNR$ reduction) and also the medium-term stability will be affected.
+
+To mitigate this effect, the reference cell is usually filled with a precise combination of gases, such as Helium, Neon, Argon or Nitrogen.
+Those gasses help in reducing the number of collisions of the Rubidium or Cesium atoms with the inner wall, enhancing the possibility of electrons to remain in the excited state for a longer time, increasing the signal-to-noise ratio $SNR$.
+
+However, we know that the gas pressure inside the reference cell depends also on the temperature.
+For this reason, the temperature of the reference cell must be kept constant to ensure a stable gas pressure and composition.
+This is also done via a dedicated servo loop as explained in Section \ref{subsec:control_loop}.
+However, the use of a dedicated thermo-stabilizing system implies an increase in both the power consumption and the size of the clock.
+
+
+\paragraph{Quality of the excitation source}
+
+Another key factor that can affect the stability of the CSAC is the quality of the excitation source.
+
+Both the bulb lamp and the diode laser are dependent from the temperature.
+A small variation in frequency can reduce the coupling between the excitation source and the atomic resonance frequency, affecting the medium-term stability of the clock.
+For this reason, the temperature of the laser source must be tuned accordingly by an appropriate servo loop.
+
+If we consider a VCSEL source (as in the case of a CPT-based clock), the temperature sensibility is around $300 GHz/K$, which means that even a very small temperature variation can greatly shift the frequency of the laser source, reducing the number of electrons in the dark state, thus decreasing the signal-to-noise ratio $SNR$.
+
+
+\paragraph{Magnetic field (Zeeman effect)}
+
+The presence of an external magnetic field can also significantly affect the accuracy of the CSAC.
+
+The Zeeman effect is a phenomenon that splits the atomic energy levels into multiple sublevels when an external magnetic field is applied.
+By doing so, the atomic resonance frequency is shifted, affecting the accuracy of the clock.
+In particular, the magnitude of the Zeeman shift is proportional to the strength of the magnetic field applied.
+
+To mitigate this effect, the entire physics package is usually shielded with a magnetic shield to reduce the impact of the external magnetic field on the atomic transitions.
+In some cases, the CSAC can also have an internal magnetic field, called \textit{C-field}, to counteract the external one.
+If that is the case, an appropriate control loop is adopted to minimize the disturbance effect.
+
+Moreover, by applying a known magnetic field to the physics package, the Zeeman shift can be measured and used to precisely calibrate the clock.
+
+
+\paragraph{Optical instabilities (Stark effect)}
+
+Similarly to the Zeeman effect, the Stark effect can also shift the atomic energy levels, affecting the accuracy of the clock.
+
+The Stark effect is a phenomenon that occurs when an oscillatory external electric field interacts with the charged nucleus and electrons within the atom, modifying their energy.
+In case of a CSAC, the excitation photon might be subjected to instabilities in intensity and/or spectral profile, inducing unintended Stark shifts that can cause deviations in the atomic resonance frequencies, leading to clock frequency instability.
+
+% To mitigate this effect, the excitation source must be carefully designed and controlled.
+% In some cases, it's possible to opt for a pulsed excitation instead of a continuous one.
+% In this way the Stark effect can be minimized, but on the other hand the signal-to-noise ratio will be reduced
+% Usually a VCSEL has higher frequency noise than Rb lamp.
+
+
+\paragraph{Frequency shifts (Doppler effect)}
+
+Finally, a huge source of disturbance for the CSAC is the Doppler effect.
+
+Inside the reference cell in fact, atoms are continuously moving with random directions.
+In this way, even if the excitation frequency is carefully selected, a red or blue shift can occur depending on the atom velocity and the coupling between the source and the atomic resonance frequency can be reduced.
+This implies a reduction in the signal-to-noise ratio and a decrease in the medium-term stability of the clock.
+
+A proposed solution is to reduce the mean-free-path of the atoms, by reducing either the pressure or the temperature inside the reference cell.
+However, in order to achieve this, more thermal power stabilization is required.

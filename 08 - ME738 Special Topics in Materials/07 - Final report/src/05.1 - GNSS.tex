@@ -1,0 +1,30 @@
+\subsection{Global Navigation Satellite System (GNSS)}
+\label{subsec:GNSS}
+
+The Global Navigation Satellite System (GNSS) is a satellite-based system that delivers geolocation and time information to any GNSS receiver that is able to receive contemporaneously signals from multiple satellites.
+The GNSS system is adopted in a wide range of networks and applications, including the Global Positioning System (GPS), Galileo\footnote{The European alternative to the American GPS}, GLONASS\footnote{The Russian alternative to the American GPS}, and it is used in military, scientific, and commercial applications.
+Basically, every application that requires a precise time reference and/or a precise position retrieve the information from the GNSS system.
+
+The process used to calculate the position of the receiver is based on the \textit{trialateration} method, which compute the distance between the receiver and the satellites by measuring the time of the light signal to travel from the sender to the receiver.
+Theoretically, the position of the receiver can be calculated by using the signals from three satellites, but in practice, a fourth satellite is used to correct the time offset of the receiver's clock.
+In fact, under a mathematical point of view, the system to be solved is composed of four equations and four unknowns, where the unknowns are the position of the receiver in space and the time offset of the receiver's clock.
+
+\begin{equation}
+    \Delta d_i = c \cdot (\Delta t_i + \delta t) = \sqrt{(x_r - x_i)^2 + (y_r - y_i)^2 + (z_r - z_i)^2}, \quad i = 1, 2, 3, 4
+\end{equation}
+
+\begin{equation}
+    \underbrace{x_r, y_r, z_r, \delta t}_\text{4 Unknowns requires 4 satellites}
+\end{equation}
+
+
+\paragraph{Role of CSAC}
+
+Nowadays, the GNSS receiver usually uses a quartz crystal oscillator to generate the clock signal.
+However, this type of oscillator has a high drift rate, which means that the time offset of the receiver's clock can change significantly over time.
+This is also the reason why the fourth satellite is required to correct the time offset of the receiver's clock.
+
+The \acrshort{csac} technology can be integrated into GNSS receivers to provide a more accurate and in particular more stable time reference, which can avoid the need for the fourth satellite after the first calibration of the receiver's clock.
+This, in turn, open the possibility to have a precise position even in remote areas where the signal from the fourth satellite might not be available.
+
+Moreover, the inner stability allows for even a more precise trilateration, both in terms of latitude and longitude, and also in terms of altitude, which is usually the most difficult parameter to measure because of geometrical considerations.

@@ -1,2 +1,25 @@
-\subsection{\acrfull{lo}}
+\subsection{Local Oscillator (LO)}
 \label{subsec:local_oscillator}
+
+The \acrfull{lo} is responsible for generating the effective output frequency of the clock.
+
+Generally speaking, the \acrshort{lo} is quartz crystal based component that generates a stable frequency near its resonance point by leveraging the mechanical vibrations of the crystal.
+However, begin a mechanical component, it's subject to temperature variations that can affect its output frequency.
+For this reason, an appropriate servo loops is implemented in order to keep it to a constant temperature and stabilize its output frequency (see Section \ref{subsec:control_loop}).
+
+Typically, the \acrshort{lo} is kept running at $10MHz$ or $20MHz$ in order to have a high compatibility with the existing electronics devices.
+Its value is then compared with the atomic one by adopting a \acrfull{fs} that multiplies its frequency by a fixed factor.
+As we have briefly explained in previous sections, to achieve this, a PLL is used to keep in phase the \acrshort{lo} with the \acrshort{fs}, minimizing the phase noise and delay that might occur between the two.
+
+In the next section (Section \ref{sec:performances_and_limitations}), we will see that the performances of the entire clock are heavily dependent on the performances of the \acrshort{lo}, in particular in the short-term stability.
+For this reason, the \acrshort{lo} is one of the most critical components of the \acrshort{csac} and should be carefully chosen based on the specific application of the clock.
+
+
+\paragraph{LO Types and Considerations}
+
+There exist many types of \acrshort{lo} that can be used in a \acrshort{csac}, each with its own characteristics and performances.
+The most commonly used are both the TCXO\footnote{Temperature Controlled Crystal Oscillator} and the OCXO\footnote{Oven Controlled Crystal Oscillator}, given their good intrinsic stability and the possibility to be precisely controlled by a temperature ambient variation.
+However, is important to note that the OCXO is generally more power-hungry, bulky, and expensive compared to the TCXO, making it unsuitable for applications having strict constraints on these parameters.
+On the other hand, OCXO are generally more stable and have a lower phase noise compared to TCXO, making them more suitable for high-performance applications.
+
+As for many other components of the \acrshort{csac}, the choice of the \acrshort{lo} is strictly dependent on the specific application and constraints of the clock.

@@ -2,7 +2,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{assignment}[2024/01/19 v1.0 ME621 Assignments class]
 
-\LoadClass[12pt]{article}
+\LoadClass[12pt, draft]{article}
 
 % Page layout
 \RequirePackage[a4paper, margin=20mm]{geometry}

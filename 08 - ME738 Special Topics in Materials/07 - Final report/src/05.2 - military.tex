@@ -1,0 +1,27 @@
+\subsection{Military Applications}
+\label{subsec:military}
+
+Military applications of \acrshort{csac} technology are many, ranging from secure communication systems to missile guidance systems.
+
+A couple of examples are IED Jammers and SAASM.
+
+
+\paragraph{IED Jammers}
+
+IED (Improvised Explosive Device) jammers are devices that shield an area around the device from radio signals, preventing the detonation of IEDs by blocking the radio signals used to trigger them.
+To work properly, the frequency of this device must be precisely adjusted, and no drift are permitted.
+Moreover, since a single jammer has a limited range, multiple jammers are often employed to cover a larger area.
+If this is the case, the networks require each node to work in a perfectly synchronized way, given that a small shift in frequency can lead to a possible failure in the entire network.
+
+In order to accomplish this, each IED jammer device usually integrate a \acrshort{csac}.
+Its capabilities of better holdover with respect to other oscillators, allows longer time of operation without the need of recalibration.
+
+
+\paragraph{SAASM}
+
+SAASM (Selective Availability Anti-Spoofing Module) is a highly secure GPS module that provides decryption and encryption capabilities for GPS receivers.
+The module is in fact capable of sending and receiving longer GPS codes (encrypted P(Y) code) that are more resistant to jamming and spoofing attempts.
+To do so, the internal clock of the device must be capable of generating a signal with a very high stability and precision to avoid any possible error in the communication.
+
+Traditionally employed quartz oscillator are not able to provide the required stability, leading to errors and securities issues in the communication.
+Instead, the stability over time of a \acrshort{csac} meet the requirements of the SAASM module, allowing it to work properly and securely.

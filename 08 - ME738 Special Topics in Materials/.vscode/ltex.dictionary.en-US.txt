@@ -12,3 +12,9 @@ trilateration
 combinators
 hyperdefine
 detuned
+OCXO
+TCXO
+Zeeman
+VCSEL
+SWaP
+geophones

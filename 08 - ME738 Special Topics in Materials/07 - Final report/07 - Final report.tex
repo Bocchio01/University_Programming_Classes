@@ -11,6 +11,7 @@
 \usepackage{enumitem}
 \usepackage{tikz}
 \usepackage{braket}
+\usepackage{adjustbox}
 
 
 \hypersetup{
@@ -30,6 +31,8 @@ pdfauthor={Tommaso Bocchietti}
 \newacronym{cpt}{CPT}{Coherent Population Trapping}
 \newacronym{rb}{Rb}{Rubidium}
 \newacronym{cs}{Cs}{Cesium}
+
+\bibliographystyle{plain}
 
 % \addbibresource{references.bib}
 
@@ -57,33 +60,41 @@ pdfauthor={Tommaso Bocchietti}
 
 \begin{document}
 
-% \maketitle
+\maketitle
 
-% \begin{figure}[H]
-% 	\centering
-% 	\includegraphics[width=.9\textwidth]{./pdf/UniversityOfWaterloo_logo_vert_pms}
-% 	\label{fig:University_Of_Waterloo_logo}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\textwidth]{./pdf/UniversityOfWaterloo_logo_vert_pms}
+    \label{fig:University_Of_Waterloo_logo}
+\end{figure}
 
-% \clearpage
-% \input{src/00 - abstract.tex}
+\clearpage
+\input{src/00 - abstract.tex}
 
-% \clearpage
-% \tableofcontents
-% % \listoffigures
-% % \listoftables
+\clearpage
+\tableofcontents
+\listoffigures
+\listoftables
 
-% \clearpage
-% \input{src/01 - introduction}
-% \input{src/02 - objective_metrics}
-\input{src/03 - working_principles}
-% \input{src/04 - performance}
-% \input{src/05 - applications}
-% \input{src/06 - future_prospects}
-% \input{src/07 - conclusion}
+\clearpage
+\input{src/01 - introduction.tex}
+\input{src/02 - objective_metrics.tex}
+\input{src/03 - working_principles.tex}
+\input{src/04 - performances_and_limitations.tex}
+\input{src/05 - applications.tex}
+\input{src/06 - future_prospects.tex}
+\input{src/07 - conclusion.tex}
 
-% \section*{Acknowledgments}
-
+\clearpage
+\nocite{*}
+\bibliography{references}
 % \printbibliography
+
+\clearpage
+\appendix
+\label{appendix}
+
+\input{src/08 - appendix.tex}
+
 
 \end{document}

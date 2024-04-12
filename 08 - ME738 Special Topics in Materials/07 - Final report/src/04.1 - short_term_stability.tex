@@ -1,0 +1,13 @@
+\subsection{Short-term frequency stability}
+\label{subsec:short_term_stability}
+
+Short-term stability is strictly related to the Fast Noise of the local oscillator.
+
+It's usually referred to very small time scale, in the order of $\tau < 1s$, and most of the time is not of real importance for real-world applications, where the main focus is on the medium and long-term stability.
+However, in some particular cases, such as scientific experiments at the nanosecond scale, the short-term stability can be a key factor to consider.
+
+Generally, we can expect to have a stability of $10^{-11} \le \sigma_y(\tau=1s) \le 10^{-10}$.
+
+The most straightforward way to mitigate the Fast Noise is to improve the quality of the local oscillator (i.e. going from a TCXO to an OCXO), but this implies an increase in the power consumption and the size of the clock, which is not always possible in portable applications.
+
+Another possibility would be to increase the frequency of the local oscillator, but then an appropriate frequency dividers would be required to obtain an output in the common electronic frequency range ($10Mhz$), increasing the overall size of the clock.
