@@ -1,0 +1,44 @@
+\section{Methods}
+
+\begin{frame}{Multivariate outlier detection}
+
+    For the reasons explained in the previous slides, it's important to isolate the effect of environmental conditions on the eigenfrequencies of the structure, in order to detect the presence of damage.
+
+    \vspace{9pt}
+
+    In the following slides, two \textbf{methods} are presented, both \textbf{based on the concept of multivariate outlier detection in the frequency domain}.
+    In particular, the following approaches are considered:
+
+    \begin{itemize}
+        \item Mahalanobis Square Distance (MSD)
+        \item Principal Component Analysis (PCA)
+    \end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Mahalanobis Square Distance (MSD)}
+
+\begin{frame}{Mahalanobis Square Distance (MSD) approach}
+
+    The Mahalanobis Square Distance (MSD) is a measure of the distance between a point and a distribution. It is defined as:
+
+    \begin{equation}
+        D_{MSD}^2 = (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu})
+    \end{equation}
+
+    Where:
+    \begin{itemize}
+        \item $\mathbf{x}$ is the vector of the observations
+        \item $\mathbf{\mu}$ is the mean of the observations
+        \item $\mathbf{\Sigma}$ is the covariance matrix of the observations
+    \end{itemize}
+
+    The MSD is used to detect outliers in the data, by comparing the distance of each observation from the mean of the distribution (identified as $t_{MSD}$).
+
+\end{frame}
+
+
+
+\subsection{Principal Component Analysis (PCA)}
