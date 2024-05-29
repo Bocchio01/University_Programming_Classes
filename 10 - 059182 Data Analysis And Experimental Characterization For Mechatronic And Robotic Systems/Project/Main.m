@@ -33,7 +33,7 @@ data.temperature_vet = load('data/temperatures.mat').TEMP';
 data.frequencies_mat = load('data/frequencies.mat').frequencies;
 
 data.plot.flags = true * [1 1 1];
-% data.plot.export_path = 'latex/img';
+% data.plot.export_path = 'latex/img/MATLAB';
 
 assert(...
     length(data.temperature_vet) == size(data.frequencies_mat, 1), ...
@@ -52,12 +52,24 @@ time_vet = 10/60 * 1/24 * (0:length(data.temperature_vet) - 1)';
 parameters = cell(0);
 results = cell(0);
 
-parameters{end+1} = compose_struct_MSD(compute_window(20/100), false);
-parameters{end+1} = compose_struct_MSD(compute_window(40/100), true);
-parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(10/100), 1);
-parameters{end+1} = compose_struct_PCA(compute_window(80/100), compute_window(80/100), 1);
-parameters{end+1} = compose_struct_PCA(compute_window(40/100), compute_window(0.25 * 40/100), 1);
-parameters{end+1} = compose_struct_PCA(compute_window(40/100), compute_window(2.00 * 40/100), 1);
+% parameters{end+1} = compose_struct_MSD(compute_window(20/100), false);
+% parameters{end+1} = compose_struct_MSD(compute_window(40/100), true);
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(10/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(80/100), compute_window(80/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(40/100), compute_window(0.25 * 40/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(40/100), compute_window(2.00 * 40/100), 1);
+
+% For Baseline analysis
+% parameters{end+1} = compose_struct_MSD(compute_window(20/100), false);
+% parameters{end+1} = compose_struct_MSD(compute_window(40/100), false);
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(20/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(40/100), compute_window(40/100), 1);
+
+% For Window analysis
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(10/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(20/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(40/100), 1);
+% parameters{end+1} = compose_struct_PCA(compute_window(20/100), compute_window(80/100), 1);
 
 
 for ii = 1:length(parameters)
@@ -101,6 +113,7 @@ clear d_PCA t_PCA_lo t_PCA t_PCA_up
 reset(0);
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+% set(0, 'defaultfigureposition', [10 10 550 400])
 
 % Preliminary analysis
 if (data.plot.flags(1) == true)
@@ -147,7 +160,7 @@ end
 
 
 % Results comparison
-if (data.plot.flags(2) == true)
+if (data.plot.flags(2) == true && numel(results) ~= 0)
 
     tabgroup = uitabgroup(figure('Name', 'Results comparison'), 'Position', [0 0 1 1]);
     
@@ -181,6 +194,8 @@ if (data.plot.flags(2) == true)
                 yline(t_MSD / t_MSD, '--k', 'Label', 't_{threshold}', 'LineWidth', 2)
                 xline(time_vet(b), '-.k', 'Label', 'baseline')
 
+                legend('(MSD) Baseline data', '(MSD) Observation data')
+
                 title_string = sprintf('MSD @ [b, contains-damage-flag] = [%d, %d]', b, parameter.F0_contains_damage);
 
             case 'PCA'
@@ -193,16 +208,20 @@ if (data.plot.flags(2) == true)
                 t_PCA = result.t_PCA;
                 t_PCA_up = result.t_PCA_up;
 
-                plot(time_vet(1:end), d_PCA(1:end) / t_PCA, '^r')
+                plot(time_vet(b+1:end), d_PCA(b+1:end) / t_PCA, '^r')
                 yline(t_PCA_up / t_PCA, '--k', 'Label', 't_{up}', 'LabelHorizontalAlignment', 'left', 'LineWidth', 2);
                 yline(t_PCA / t_PCA, '-.k', 'Label', 't_{threshold}', 'LabelHorizontalAlignment', 'left');
                 yline(t_PCA_lo / t_PCA, '--k', 'Label', 't_{lo}', 'LabelHorizontalAlignment', 'left', 'LineWidth', 2);
                 xline(time_vet(b), '-.k', 'Label', 'baseline')
 
+                legend('(PCA) Observation data')
+
                 title_string = sprintf('PCA @ [b, n, p] = [%d, %d, %d]', b, n, p);
 
         end
-    
+   
+        xlim('tight')
+
         tab.Title = title_string;
         title(title_string)
         yyaxis left
@@ -301,18 +320,12 @@ function export_plot_tile(tile, title, plot_struct)
 
 if (isfield(plot_struct, 'export_path'))
 
-    pause(0.5);
+    pause(1);
     filename = [plot_struct.export_path '\' title '.png'];
     exportgraphics(tile, filename, 'Resolution', 300);
 
 end
 
 end
-
-
-
-
-
-
 
 
