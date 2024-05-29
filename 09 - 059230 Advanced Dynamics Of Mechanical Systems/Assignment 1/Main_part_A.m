@@ -14,6 +14,9 @@ data = struct( ...
 data.J = 1/12 * data.b * data.h^3;
 data.m = data.rho * data.b * data.h;
 
+plots.flags = true * [1 1 1 1];
+plots.export_path = 'latex/img/MATLAB/Part_A';
+
 
 %% Common functions and constant definition
 
@@ -123,6 +126,8 @@ for ii = 1:length(f_nat_vet)
     f_range_vet(ii, :) = linspace(max(0, f_nat_vet(ii)) - 1.5, f_nat_vet(ii) + 1.5, f_resolution);
     G_exp_peaks = zeros(length(xj_output) * length(xk_input), f_resolution);
 
+    % Here we recompute with an higher frequecy resolution the FRFs coming
+    % from the theoretical model.
     for idx = 1:length(xk_input) * length(xj_output)
 
         [xj_idx, xk_idx] = ind2sub([length(xj_output), length(xk_input)], idx);
@@ -138,14 +143,17 @@ for ii = 1:length(f_nat_vet)
 
     end
 
+    % Here we call the parameters identification algorithm and store all
+    % the identified parameters in proper data structures.
     [...
         omega_num_nat(ii), ...
         xi_num(ii), ...
         A_num(:, ii), ...
         RL_num(:, ii), ...
-        RH_num(:, ii) ...
-        ] = identify_modal_parameters(f_range_vet(ii, :), G_exp_peaks);
+        RH_num(:, ii)] = identify_modal_parameters(f_range_vet(ii, :), G_exp_peaks);
 
+    % Finally, based on the previously identified parameters, we assemble
+    % our identified FRF around the resonance peaks (OMA results).
     for idx = 1:length(xk_input) * length(xj_output)
 
         G_num(idx, ii, :) = ...
@@ -164,142 +172,166 @@ end
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
-figure_frequencies_mode_shapes = figure('Name', 'Frequencies and mode shapes');
-tiledlayout(3, 4);
 
-nexttile([1 4]);
-hold on
-grid on
+% Preliminary analysis
+if (plots.flags(1) == true)
 
-semilogy(f_vet, H_det_vet, '-b');
-semilogy(f_nat_vet, H_det_vet(find(ismember(f_vet, f_nat_vet))), 'or');
+    figure('Name', 'Frequencies and mode shapes');
+    tiledlayout(2, length(f_nat_vet));
 
-set(gca, 'YScale', 'log')
-
-title('Natural frequencies search')
-xlabel('f [Hz]')
-ylabel('|H(f)|')
-
-legend('Module of H(f)', 'Natural frequecies')
-
-nexttile(7, [2 2])
-hold on
-grid on
-
-plot(x_vet, mode_shape(:, :));
-
-title('Modes Shape')
-xlabel('Length [m]')
-ylabel('Normalized displachment [m]')
-
-for ii = 1:length(f_nat_vet)
-
-    nexttile
+    H_tile = nexttile([1 length(f_nat_vet)]);
     hold on
     grid on
 
-    plot(x_vet, mode_shape(:, ii));
+    semilogy(f_vet, H_det_vet, '-b');
+    semilogy(f_nat_vet, H_det_vet(find(ismember(f_vet, f_nat_vet))), 'or');
 
-    title(['Mode Shape ' num2str(ii)])
-    legend(['f' num2str(ii) ' = ' num2str(f_nat_vet(ii)) ' [Hz]'])
+    set(gca, 'YScale', 'log')
 
-    xlabel('Length [m]')
-    ylabel('Normalized displachment [m]')
+    title('Natural frequencies search')
+    xlabel('f [Hz]')
+    ylabel('|H(f)|')
+
+    legend('Module of H(f)', 'Natural frequecies')
+
+    export_plot_tile(H_tile, 'H_module', plots)
+
+    for ii = 1:length(f_nat_vet)
+
+        tile = nexttile;
+        hold on
+        grid on
+
+        plot(x_vet, mode_shape(:, ii));
+
+        title(['Mode Shape ' num2str(ii)])
+        legend(['f' num2str(ii) ' = ' num2str(f_nat_vet(ii)) ' [Hz]'])
+
+        xlabel('Length [m]')
+        ylabel('Normalized displachment [m]')
+
+        export_plot_tile(tile, sprintf('mode_shape_%02d', ii), plots)
+
+    end
 
 end
 
 
-figure_frequency_response_functions = figure('Name', 'Frequency Response Functions (FRFs)');
-tiledlayout(2, 1);
+% Experimental FRFs for each input/output couple
+if(plots.flags(2) == true)
 
-abs_FRF = nexttile;
-hold on
-grid on
+    figure('Name', 'Frequency Response Functions (FRFs)');
+    tiles = tiledlayout(2, 1);
 
-for idx = 1:length(xk_input) * length(xj_output)
+    abs_FRF = nexttile;
+    hold on
+    grid on
+
+    for idx = 1:length(xk_input) * length(xj_output)
+        semilogy(f_vet, abs(G_exp(idx, :)))
+    end
+
+    set(gca, 'YScale', 'log')
+
+    title('|G_{exp}(f)| for every couple of input and output')
+    xlabel('f [Hz]')
+    ylabel('|G(f)| [m/N]')
+
+    angle_FRF = nexttile;
+    hold on
+    grid on
+
+    for idx = 1:length(xk_input) * length(xj_output)
+        plot(f_vet, angle(G_exp(idx, :)))
+    end
+
+    set(gca, 'YTick', -pi:pi/2:pi)
+    set(gca, 'YTickLabel', {'-pi', '-pi/2', '0', 'pi/2', 'pi'})
+
+    title('\phi(G_{exp}(f)) for every couple of input and output')
+    xlabel('f [Hz]')
+    ylabel('\phi(G(f)) [rad]')
+
+    linkaxes([abs_FRF angle_FRF], 'x')
+
+    export_plot_tile(tiles, 'Experimental_FRF_couple_all', plots)
+
+end
+
+
+% Comparison between experimental and numerical FRF
+if (plots.flags(3) == true)
+
+    figure('Name', 'Modes shape - Experimental vs. Numerical');
+    tiles = tiledlayout(2, 1);
+
+    xj_idx = 1;
+    xk_idx = 6;
+    idx = sub2ind([length(xk_input) length(xj_output)], xj_idx, xk_idx);
+
+    abs_FRF = nexttile;
+    hold on
+    grid on
+
     semilogy(f_vet, abs(G_exp(idx, :)))
-end
+    for ii = 1:length(f_nat_vet)
+        semilogy(f_range_vet(ii, :), abs(squeeze(G_num(idx, ii, :))), 'or')
+    end
 
-set(gca, 'YScale', 'log')
+    set(gca, 'YScale', 'log')
 
-title('|G_{exp}(f)| for every couple of input and output')
-xlabel('f [Hz]')
-ylabel('|G(f)| [m/N]')
+    title(['FRF Module @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
+    legend('G_{exp}(f)', 'G_{num}(f)')
+    xlabel('f [Hz]')
+    ylabel('|G(f)| [m/N]')
 
-angle_FRF = nexttile;
-hold on
-grid on
-
-for idx = 1:length(xk_input) * length(xj_output)
-    plot(f_vet, angle(G_exp(idx, :)))
-end
-
-set(gca, 'YTick', -pi:pi/2:pi) 
-set(gca, 'YTickLabel', {'-pi', '-pi/2', '0', 'pi/2', 'pi'})
-
-title('\phi(G_{exp}(f)) for every couple of input and output')
-xlabel('f [Hz]')
-ylabel('\phi(G(f)) [rad]')
-
-linkaxes([abs_FRF angle_FRF], 'x')
-
-
-% Comparison between experimental and numerical results
-figure_exp_vs_num = figure('Name', 'Experimental vs. Numerical (FRF and mode shapes)');
-tiledlayout(2, 4)
-
-xj_idx = 1;
-xk_idx = 6;
-idx = sub2ind([length(xk_input) length(xj_output)], xj_idx, xk_idx);
-
-abs_FRF = nexttile(1, [1, 2]);
-hold on
-grid on
-
-semilogy(f_vet, abs(G_exp(idx, :)))
-for ii = 1:length(f_nat_vet)
-    semilogy(f_range_vet(ii, :), abs(squeeze(G_num(idx, ii, :))), 'or')
-end
-
-set(gca, 'YScale', 'log')
-
-title(['FRF Module @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
-legend('G_{exp}(f)', 'G_{num}(f)')
-xlabel('f [Hz]')
-ylabel('|G(f)| [m/N]')
-
-angle_FRF = nexttile(5, [1, 2]);
-hold on
-grid on
-
-plot(f_vet, angle(G_exp(idx, :)))
-for ii = 1:length(f_nat_vet)
-    plot(f_range_vet(ii, :), angle(squeeze(G_num(idx, ii, :))), 'or')
-end
-
-set(gca, 'YTick', -pi:pi/2:pi) 
-set(gca, 'YTickLabel', {'-pi', '-pi/2', '0', 'pi/2', 'pi'})
-
-title(['FRF Phase @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
-legend('G_{exp}(f)', 'G_{num}(f)')
-xlabel('f [Hz]')
-ylabel('\phi(G(f)) [rad]')
-
-linkaxes([abs_FRF angle_FRF], 'x')
-
-for ii = 1:length(f_nat_vet)
-
-    nexttile
+    angle_FRF = nexttile;
     hold on
     grid on
-    
-    plot(x_vet, mode_shape(:, ii), 'LineWidth', 1)
-    plot(xj_output, A_num(1:6, ii) / max(abs(A_num(1:6, ii))), 'or')
 
-    title(['Mode Shape ' num2str(ii)])
-    legend('Model', 'Identified')
+    plot(f_vet, angle(G_exp(idx, :)))
+    for ii = 1:length(f_nat_vet)
+        plot(f_range_vet(ii, :), angle(squeeze(G_num(idx, ii, :))), 'or')
+    end
 
-    xlabel('Length [m]')
-    ylabel('Normalized displachment [m]')
+    set(gca, 'YTick', -pi:pi/2:pi)
+    set(gca, 'YTickLabel', {'-pi', '-pi/2', '0', 'pi/2', 'pi'})
+
+    title(['FRF Phase @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
+    legend('G_{exp}(f)', 'G_{num}(f)')
+    xlabel('f [Hz]')
+    ylabel('\phi(G(f)) [rad]')
+
+    linkaxes([abs_FRF angle_FRF], 'x')
+
+    export_plot_tile(tiles, sprintf('Comparison_FRF_couple_%d_%d', xj_idx, xk_idx), plots)
+
+end
+
+
+% Comparison between experimental and numerical FRF
+if (plots.flags(4) == true)
+
+    figure('Name', 'FRF - Experimental vs. Numerical');
+    tiledlayout(ceil(length(f_nat_vet) / 2), floor(length(f_nat_vet) / 2))
+
+    for ii = 1:length(f_nat_vet)
+
+        tile = nexttile;
+        hold on
+        grid on
+
+        plot(x_vet, mode_shape(:, ii), 'LineWidth', 1)
+        plot(xj_output, A_num(1:6, ii) / max(abs(A_num(1:6, ii))), 'or')
+
+        title(['Mode Shape ' num2str(ii)])
+        legend('Model', 'Identified')
+
+        xlabel('Length [m]')
+        ylabel('Normalized displachment [m]')
+
+        export_plot_tile(tile, sprintf('Comparison_ModeShape_%02d', ii), plots)
+
+    end
 
 end

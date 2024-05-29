@@ -54,7 +54,6 @@ for idx = 1:size(G_exp, 1)
 
 end
 
-% Vettore delle condizioni iniziali
 zero_vet = zeros(length(f_num_nat(:)), 1);
 X0 = [omega(f_num_nat(:)) xi(:) A(:) zero_vet zero_vet zero_vet zero_vet];
 

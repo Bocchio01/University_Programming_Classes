@@ -1,0 +1,23 @@
+\section{Parameters identification}
+\label{sec:parameters_identification}
+
+In this section, we are going to explain the procedure followed to identify the parameters of the system starting from the FRFs obtained in the previous section.
+Basically we are going to simulate an `Operational Modal Analysis' (OMA), even if in this case we already have the exact model of the system.
+
+In particular, we know that for a multi degree-of-freedom system, with lightly damped modes and in particular in case of well distinguished peaks, the FRF can be approximated around a given natural frequency $\omega_n$ as:
+
+\begin{equation}
+    H{j, k}^{NUM}(\Omega) = \frac{A_{j, k}^(i)}{-\Omega^2 + 2 \xi_i \omega_i \Omega + \omega_i^2} + \frac{R_{j, k}^L}{\Omega^2} + R_{j, k}^{H} \quad \text{for} \quad \Omega_{min} \leq \omega_i \leq \Omega_{max}
+    \label{eq:FRF_approximation}
+\end{equation}
+
+As we can see, the FRF is approximated as a sum of three terms: a second order term, a low frequency term and a high frequency term.
+The second order term is the one that we are interested in, since it is the one that contains the information about the natural frequency and the damping ratio of the system.
+However, if the peaks are not well distinguished, the low and high frequency terms can interfere with the second order term and became non-negligible in the approximation.
+
+In the following, a common procedure is explained to identify all the unknown parameters of $H{j, k}^{NUM}(\Omega)$, once the experimental FRFs are available.
+In particular, we will see how to identify the natural frequencies $\omega_i^{NUM}$, the damping ratios $\xi_i^{NUM}$, and the gains $A_{j, k}^{NUM}$, $R_{j, k}^L$ and $R_{j, k}^H$, using minimization techniques.
+
+
+\input{src/04.1 - procedure.tex}
+\input{src/04.2 - results.tex}

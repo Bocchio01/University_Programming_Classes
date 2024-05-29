@@ -1,0 +1,63 @@
+\subsection{Procedure}
+\label{subsec:procedure}
+
+Many of the following steps are based on the assumption that the frequencies vector defining the FRFs, has a higher enough resolution to properly address the following procedure.
+In case of a low resolution, the frequencies vector should be at least interpolated in order to obtain a more fine grid over the frequency range of interest.
+
+All the following steps, must be repeated for each natural frequency $\omega_i$ of the system.
+
+\paragraph{Natural frequencies}
+
+The first step is to identify the value of the natural frequency $\omega_i^{NUM}$ of the system.
+
+This can be done by looking at the peaks of the FRFs.
+If we have many FRFs at our disposal (for example, we have many sensors or we have performed many tests), we can average the FRFs in order to reduce the noise and obtain a more reliable result.
+Remember that the natural frequency identified has to be the same for all the FRFs.
+
+\paragraph{Damping ratios}
+
+The second step is to identify the value of the damping ratio $\xi_i^{NUM}$ of the system.
+
+For this purpose, we can use both the `phase derivative' method or the `half power bandwidth' method (also known as `peak picking' method).
+
+For this assignment, we decided to use the `phase derivative' method, given that the experimental FRFs have a fine enough grid of frequencies.
+
+By looking at the phase of the FRF evaluated at the natural frequency $\omega_i$, we observe that the slope of the phase can be directly related to the damping ratio $\xi_i$.
+In particular:
+
+\begin{equation}
+    \frac{\partial \angle H_{j, k}(\Omega)}{\partial \Omega} \biggl|_{\Omega = \omega_i} = - \frac{1}{\xi_i \omega_i}
+    \label{eq:phase_derivative}
+\end{equation}
+
+Based on this relation, we can isolate the damping ratio $\xi_i$ and obtain its value numerically, computing the derivative of the phase of the FRF evaluated at the natural frequency $\omega_i$ using a finite difference method.
+
+\begin{equation}
+    \xi_i^{NUM} = - \frac{1}{\omega_i^{NUM} \cdot \frac{\Delta \angle G_{i,k}^{NUM}(\omega_i^{NUM})}{\Delta \omega}}
+\end{equation}
+
+\paragraph{Gain $A_{j, k}^{NUM}$}
+
+The third step is to identify the value of the gain $A_{j, k}^{NUM}$ of the system.
+
+\begin{center}
+    \huge{It's not very clear to me how we have computed this parameter. To be clarified.}
+\end{center}
+
+\paragraph{Final minimization algorithm}
+
+Finally, we can proceed with the minimization of the error between the experimental FRFs and the model FRFs, in order to identify the `exact' values of all the parameters of the system, since the previous steps are only needed as a first approximation.
+
+To do so, we define the error function as:
+
+\begin{equation}
+    \epsilon = \sum_{j, k, \Omega} \left| H_{j, k}^{NUM}(\Omega) - H_{j, k}^{EXP}(\Omega) \right|^2
+    \label{eq:error_function}
+\end{equation}
+
+Which we can think of as the sum of the squared differences between the experimental FRFs and the numerical FRFs evaluated at all the considered frequencies around the analyzed natural frequency $\omega_i$.
+
+In order to minimize the error function, we can use a minimization algorithm, such as the `Levenberg-Marquardt' algorithm, which is a combination of the `Gauss-Newton' algorithm and the `Steepest Descent' algorithm.
+This algorithm is particularly useful in case of non-linear least squares problems, such as the one we are facing.
+
+In \texttt{MATLAB}, the `Levenberg-Marquardt' algorithm is implemented in the function \texttt{lsqnonlin}.

@@ -1,0 +1,60 @@
+\section{Computation of FRFs}
+\label{sec:computation_of_FRFs}
+
+The computation of the FRFs is a crucial step in the analysis of the dynamic behavior of a structure.
+
+The FRF is a complex-valued function that describes the steady-state response of a system to a sinusoidal excitation.
+Even if the restriction over the shape of the excitation is quite severe, the FRF is a powerful tool to analyze the dynamic behavior of a system given that due to the linearity of the system, the response to a general excitation can be obtained by a linear combination of the responses to sinusoidal excitations (Fourier series).
+
+By definition, the FRF is the ratio of the output to the input in the frequency domain.
+For a linear time-invariant system, the FRF is a complex-valued function of the frequency, and it is defined as:
+
+\begin{equation}
+    H(\omega) = \frac{Y(\omega)}{F(\omega)}
+\end{equation}
+
+Where $H(\omega)$ is the FRF, $Y(\omega)$ is the Fourier transform of the output signal $y(t)$, and $F(\omega)$ is the Fourier transform of the input signal $f(t)$.
+
+Moreover, to give a more practical definition, the FRF is the function that relates the output of a system considered at a specific coordinate to a sinusoidal input at a given coordinate.
+If we then consider the system to be linear, time-invariant, and with a single input $@x_k$ and a single output $@x_j$, than the FRF can be defined as:
+
+\begin{equation}
+    H_{j,k}(\Omega) = \sum_{i=1}^{n} \frac{\Phi_i(x_j) \Phi_i(x_k) / m_i}{-\Omega^2 + 2\xi_i \omega_i \Omega i + \omega_i^2}
+    \label{eq:FRF}
+\end{equation}
+
+Where, all the entities of Equation \ref{eq:FRF} are defined in Table \ref{tab:FRF_entities}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cl}
+        \hline
+        Parameter     & Description                                         \\
+        \hline
+        $\Phi_i(x^*)$ & Mode shape of the $i^{th}$ mode at coordinate $x^*$ \\
+        $m_i$         & Equivalent mass of the $i^{th}$ mode                \\
+        $\xi_i$       & Damping ratio of the $i^{th}$ mode                  \\
+        $\omega_i$    & Natural frequency associated to the $i^{th}$ mode   \\
+        $\Omega$      & Frequency of the sinusoidal excitation              \\
+        \hline
+    \end{tabular}
+    \caption{Entities explanation for Equation \ref{eq:FRF}}
+    \label{tab:FRF_entities}
+\end{table}
+
+As we can notice, among the entities of Equation \ref{eq:FRF}, at the moment we are only missing the equivalent mass $m_i$ and the damping ratio $\xi_i$.
+
+The equivalent mass $m_i$ is a fictitious mass that represents the amount of mass of the system that is effectively moving in the $i^{th}$ mode, weighted by the mode shape.
+From this definition, we get:
+
+\begin{equation}
+    m_i = \int_{0}^{L} \rho A \Phi_i^2(x) dx
+\end{equation}
+
+For the damping ratio $\xi_i$, we can either use the Rayleigh damping model or the modal damping model.
+However, since we are not dealing with a discretized system, but rather with a continuous one, for the sake of simplicity we will assume the damping ratio to be $\xi_i = \frac{c_i}{2 \sqrt{m_i k_i}} = 0.01$.
+
+By doing so, we can compute the FRFs for the system at hand, and we can analyze the dynamic behavior of the structure.
+
+\input{src/03.1 - FRF_single_input_multi_output.tex}
+\input{src/03.2 - FRF_multi_input_multi_output.tex}

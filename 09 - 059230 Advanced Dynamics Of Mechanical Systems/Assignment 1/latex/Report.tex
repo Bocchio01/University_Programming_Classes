@@ -1,0 +1,66 @@
+\documentclass{assignment}
+
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{titlesec}
+\usepackage{soul}
+\usepackage{csvsimple}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usetikzlibrary{shapes, arrows}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+\setlength{\parindent}{0pt}
+
+\hypersetup{
+pdftitle={Advanced Dynamics of Mechanical Systems},
+pdfsubject={Report for assignment 1},
+pdfauthor={Tommaso Bocchietti}
+}
+
+\makeglossaries
+
+% \newacronym{cfd}{CFD}{Computational Fluid Dynamics}
+
+\begin{document}
+
+\title{Advanced Dynamics of Mechanical Systems \\ Assignment 1}
+\author{Tommaso Bocchietti 10740309 \\ Nome Cognome Codice Persona \\ Nome Cognome Codice Persona}
+\date{A.Y. 2023/24}
+
+\maketitle
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./pdf/Polimi_logo_coverpage.pdf}
+    \label{fig:Polimi_logo}
+\end{figure}
+
+\clearpage
+\tableofcontents
+\listoffigures
+\listoftables
+\lstlistoflistings
+\printglossary[type=\acronymtype]
+
+\clearpage
+\input{src/01 - requests_part_A.tex}
+\input{src/02 - computation_of_natural_frequencies_and_mode_shapes.tex}
+\input{src/03 - computation_of_FRFs.tex}
+\input{src/04 - parameters_identification.tex}
+\input{src/05 - final_results.tex}
+
+\clearpage
+\input{src/06 - requests_part_B.tex}
+\input{src/07 - data_analysis.tex}
+\input{src/08 - final_results.tex}
+
+
+
+% \clearpage
+% \bibliographystyle{plain}
+% \bibliography{ref}
+
+\end{document}

@@ -1,0 +1,94 @@
+\section{Computation of natural frequencies and mode shapes}
+\label{sec:computation_of_natural_frequencies_and_mode_shapes}
+
+For the problem at hand, we are dealing with a cantilever beam (see Figure \ref{fig:beam}) with parameters as shown in Table \ref{tab:beam_parameters}.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[xscale=1, yscale=0.5]
+
+        \draw (0,-0.5) rectangle (8, 0.5);
+        \draw[|-|] (0, -1.5) -- (8, -1.5) node[midway, below]{$L$};
+
+        \draw (0, -2) -- (0,  2);
+
+        \foreach \y in {-1.8, -1.6, ..., 1.8}
+        \draw (0, \y) -- ++(-0.2, +0.2);
+
+    \end{tikzpicture}
+    \caption{Aluminum beam with rectangular cross-section}
+    \label{fig:beam}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        Parameter       & Symbol & Unit     & Value  \\
+        \hline
+        Length          & $L$    & $mm$     & $1200$ \\
+        Thickness       & $h$    & $mm$     & $8$    \\
+        Width           & $b$    & $mm$     & $40$   \\
+        Density         & $\rho$ & $kg/m^3$ & $2700$ \\
+        Young's modulus & $E$    & $GPa$    & $68$   \\
+        \hline
+    \end{tabular}
+    \caption{Parameters of the cantilever beam}
+    \label{tab:beam_parameters}
+\end{table}
+
+For this type of system/structure, considering zero axial-load, the standing wave equation governing its dynamics is:
+
+\begin{equation}
+    E I \frac{\partial^4 u}{\partial x^4} = - \rho A \frac{\partial^2 u}{\partial t^2}
+\end{equation}
+
+Which, when fully solved, leads to the following formulation of vertical displacement over time $w(x,t)$:
+
+\begin{equation}
+    w(x,t) = \left[A\cos(\gamma x) + B\sin(\gamma x) + C\cosh(\gamma x) + D\sinh(\gamma x)\right] \cos(\omega t + \phi)
+\end{equation}
+
+Where $\gamma^4 = \frac{m \omega^2}{EJ}$.
+
+By applying the boundary conditions of the cantilever beam, we can find the natural frequencies (and successively also the mode shapes) of the system.
+The equations that must be satisfied are:
+
+\begin{equation}
+    \begin{cases}
+        w(0,t) = 0                                 \\
+        \frac{\partial w}{\partial x}(0,t) = 0     \\
+        \frac{\partial^2 w}{\partial x^2}(L,t) = 0 \\
+        \frac{\partial^3 w}{\partial x^3}(L,t) = 0
+    \end{cases}
+\end{equation}
+
+By highlighting the four unknowns $A$, $B$, $C$ and $D$, and rearranging the equations in a matrix form, we end up with a linear system as:
+
+\begin{equation}
+    [H(\omega)] z
+    =
+    \begin{bmatrix}
+        1               & 0               & 1                & 0                \\
+        0               & 1               & 0                & 1                \\
+        -\cos(\gamma L) & -\sin(\gamma L) & +\cosh(\gamma L) & +\sinh(\gamma L) \\
+        +\sin(\gamma L) & -\cos(\gamma L) & +\sinh(\gamma L) & +\cosh(\gamma L)
+    \end{bmatrix}
+    \begin{bmatrix}
+        A \\
+        B \\
+        C \\
+        D
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        0 \\
+        0
+    \end{bmatrix}
+    \label{eq:linear_system}
+\end{equation}
+
+\input{src/02.1 - natural_frequencies}
+\input{src/02.2 - mode_shapes}
