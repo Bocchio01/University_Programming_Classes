@@ -52,8 +52,8 @@ P095_UB = icdf(pd_ub, 0.95);
 
 b = size(F0, 1);
 t_PCA = sum(d0 > P095) / b;
-t_PCA_up = sum(d0 > P095_UB) / b;
-t_PCA_lo = sum(d0 > P095_LB) / b;
+t_PCA_up = sum(d0 > P095_LB) / b;
+t_PCA_lo = sum(d0 > P095_UB) / b;
 
 end
 
