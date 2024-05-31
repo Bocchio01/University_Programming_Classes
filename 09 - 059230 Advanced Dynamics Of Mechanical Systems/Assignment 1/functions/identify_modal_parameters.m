@@ -42,6 +42,8 @@ for idx = 1:size(G_exp, 1)
     d_G_angle = angle(G_exp(idx, max_idx + 1)) - angle(G_exp(idx, max_idx - 1));
 
     xi(idx) = - 1 / (omega(f_num_nat(idx)) * (d_G_angle/d_omega));
+    
+    % A(idx) = 1i * (2 * G_exp(idx, max_idx) * omega(f_num_nat(idx))^2 * xi(idx));
     A(idx) = - imag(2 * G_exp(idx, max_idx) * omega(f_num_nat(idx))^2 * xi(idx));
 
     G_exp_hat = G_exp(idx, :);

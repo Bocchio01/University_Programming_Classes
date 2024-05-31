@@ -1,5 +1,5 @@
 \section{Final results (mode shapes comparison)}
-\label{sec:final_results}
+\label{sec:final_results_A}
 
 Even if the comparison between the experimental FRFs and the numerical FRFs in the complex plane is a good way to validate the identified parameters, it is also useful to compare the mode shapes obtained from the experimental data with the ones obtained from the numerical model.
 
@@ -31,32 +31,28 @@ To be consistent with the previously shown FRF figures, we are now going to repr
     \label{fig:Mode_shapes_comparison}
 \end{figure}
 
-Numerically speaking, we can also report the relative error between the experimental and numerical mode shapes, computed as:
+Numerically speaking, we can also report the relative error between the experimental and numerical natural frequencies, defined as follows:
 
 \begin{equation}
-    \text{Relative error} = \frac{\sum_{i=1}^{N} \left| \phi_{\text{exp},i} - \phi_{\text{num},i} \right|}{\sum_{i=1}^{N} \left| \phi_{\text{exp},i} \right|}
+    \text{Relative error} = \frac{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} - \omega_{\text{num},i} \right|}{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} \right| \%}
 \end{equation}
 
-Where $\phi_{\text{exp},i}$ and $\phi_{\text{num},i}$ are the $i$-th components of the experimental and numerical mode shapes, respectively.
+Where $\omega_{\text{exp},i}$ and $\omega_{\text{num},i}$ are the $i$-th experimental and numerical natural frequencies, respectively.
 
-The relative error for the first 4 modes of the system is reported in the following table.
-
-\begin{center}
-    \huge{Table values to be replaced with the correct ones.}
-\end{center}
+The relative error for the first 4 natural frequencies of the system is reported in the following table.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{lccc}
         \hline
-        Mode & Experimental & Numerical & Relative error \\
+        Mode & Experimental [rad/s] & Numerical [rad/s] & Relative error [\%] \\
         \hline
-        1    & Experimental & Numerical & Relative error \\
-        2    & Experimental & Numerical & Relative error \\
-        3    & Experimental & Numerical & Relative error \\
-        4    & Experimental & Numerical & Relative error \\
+        1    & 28.2767              & 28.2524           & 0.0859              \\
+        2    & 177.3053             & 177.2344          & 0.0400              \\
+        3    & 496.5177             & 496.3996          & 0.0238              \\
+        4    & 973.0323             & 973.0560          & -0.0024             \\
         \hline
     \end{tabular}
-    \caption{Relative error between experimental and numerical mode shapes}
-    \label{tab:Relative_error_mode_shapes}
+    \caption{Relative error between experimental and numerical natural frequencies}
+    \label{tab:Relative_error_frequencies}
 \end{table}
