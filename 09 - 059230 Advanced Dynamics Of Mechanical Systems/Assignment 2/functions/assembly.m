@@ -10,13 +10,13 @@ assert(length(EJ) == n_el, 'Number of elements in EJ differenc number of element
 assert(length(gamma) == n_el, 'Number of elements in alpha differenc number of elements');
 assert(min(incidenze, [], "all") == 1 , 'DOF sequence does not start from 1');
 
-n_dof=max(max(idb));
+n_dof = max(max(idb));
 
 % Assembling matrices M and K
-M=zeros(n_dof,n_dof);
-K=zeros(n_dof,n_dof);
+M = zeros(n_dof, n_dof);
+K = zeros(n_dof, n_dof);
 
-for k=1:n_el
+for k = 1:n_el
 
     [mG, kG] = compute_elemental_matrices(l(k),m(k),EA(k),EJ(k),gamma(k));
     

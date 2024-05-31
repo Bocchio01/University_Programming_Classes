@@ -1,0 +1,232 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7870,        222]
+NotebookOptionsPosition[      7506,        208]
+NotebookOutlinePosition[      7915,        224]
+CellTagsIndexPosition[      7872,        221]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Define", " ", "total", " ", "travel", " ", "parameters"}], "*)"}], 
+  RowBox[{
+   RowBox[{
+    RowBox[{"totalDistance", "=", "24"}], ";"}], " ", 
+   RowBox[{"(*", 
+    RowBox[{"total", " ", "distance", " ", "in", " ", "meters"}], "*)"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{"totalTime", "=", "20"}], ";"}], " ", 
+   RowBox[{"(*", 
+    RowBox[{"total", " ", "time", " ", "in", " ", "seconds"}], "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"Calculate", " ", "acceleration"}], ",", 
+     RowBox[{"constant", " ", "velocity"}], ",", 
+     RowBox[{"and", " ", "times"}]}], "*)"}], "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Acceleration", " ", "phase", " ", "parameters"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"distance1", "=", "8"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"distance2", "=", "8"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"distance3", "=", "8"}], ";"}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Solve", " ", "for", " ", "acceleration", " ", "and", " ", "time", " ", 
+     "for", " ", "the", " ", "first", " ", "phase"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"acceleration", "=", 
+     RowBox[{"2", "*", 
+      RowBox[{"distance1", "/", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"totalTime", "/", "3"}], ")"}], "^", "2"}]}]}]}], ";"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{"time1", "=", 
+     RowBox[{"Sqrt", "[", 
+      RowBox[{"2", "*", 
+       RowBox[{"distance1", "/", "acceleration"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"velocityMax", "=", 
+     RowBox[{"acceleration", "*", "time1"}]}], ";"}], "\[IndentingNewLine]", 
+   "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Time", " ", "for", " ", "constant", " ", "velocity", " ", "phase"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"time2", "=", 
+     RowBox[{"distance2", "/", "velocityMax"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Time", " ", "for", " ", "deceleration", " ", "phase"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"time3", "=", "time1"}], ";"}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Check", " ", "total", " ", "time", " ", "consistency"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Total Time: \>\"", ",", 
+      RowBox[{"time1", "+", "time2", "+", "time3"}]}], "]"}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Define", " ", "piecewise", " ", "function", " ", "for", " ", "load", " ",
+      "position"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"loadPosition", "[", "t_", "]"}], ":=", 
+     RowBox[{"Piecewise", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"1", "/", "2"}], "*", "acceleration", "*", 
+           RowBox[{"t", "^", "2"}]}], ",", 
+          RowBox[{"t", "<=", "time1"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"distance1", "+", 
+           RowBox[{"velocityMax", "*", 
+            RowBox[{"(", 
+             RowBox[{"t", "-", "time1"}], ")"}]}]}], ",", 
+          RowBox[{"time1", "<", "t", "<=", 
+           RowBox[{"time1", "+", "time2"}]}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"distance1", "+", "distance2", "+", 
+           RowBox[{"velocityMax", "*", 
+            RowBox[{"(", 
+             RowBox[{"t", "-", 
+              RowBox[{"(", 
+               RowBox[{"time1", "+", "time2"}], ")"}]}], ")"}]}], "-", 
+           RowBox[{
+            RowBox[{"1", "/", "2"}], "*", "acceleration", "*", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"t", "-", 
+               RowBox[{"(", 
+                RowBox[{"time1", "+", "time2"}], ")"}]}], ")"}], "^", 
+             "2"}]}]}], ",", 
+          RowBox[{"t", ">", 
+           RowBox[{"time1", "+", "time2"}]}]}], "}"}]}], "}"}], "]"}]}], 
+    ";"}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Compute", " ", "velocity", " ", "as", " ", "the", " ", "derivative", " ",
+      "of", " ", "position"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"loadVelocity", "[", "t_", "]"}], ":=", 
+     RowBox[{"D", "[", 
+      RowBox[{
+       RowBox[{"loadPosition", "[", "t", "]"}], ",", "t"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Compute", " ", "acceleration", " ", "as", " ", "the", " ", "derivative", 
+     " ", "of", " ", "velocity"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"loadAcceleration", "[", "t_", "]"}], ":=", 
+     RowBox[{"D", "[", 
+      RowBox[{
+       RowBox[{"loadVelocity", "[", "t", "]"}], ",", "t"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Define", " ", "time", " ", "range", " ", "for", " ", "plotting"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"timeRange", "=", 
+     RowBox[{"{", 
+      RowBox[{"t", ",", "0", ",", "totalTime"}], "}"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"Plot", " ", "position"}], ",", "velocity", ",", 
+     RowBox[{"and", " ", "acceleration"}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"positionPlot", "=", 
+     RowBox[{"Plot", "[", 
+      RowBox[{
+       RowBox[{"loadPosition", "[", "t", "]"}], ",", "timeRange", ",", 
+       RowBox[{"PlotLabel", "->", "\"\<Position vs Time\>\""}], ",", 
+       RowBox[{"AxesLabel", "->", 
+        RowBox[{"{", 
+         RowBox[{"\"\<Time (s)\>\"", ",", "\"\<Position (m)\>\""}], "}"}]}]}],
+       "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"velocityPlot", "=", 
+     RowBox[{"Plot", "[", 
+      RowBox[{
+       RowBox[{"loadVelocity", "[", "t", "]"}], ",", "timeRange", ",", 
+       RowBox[{"PlotLabel", "->", "\"\<Velocity vs Time\>\""}], ",", 
+       RowBox[{"AxesLabel", "->", 
+        RowBox[{"{", 
+         RowBox[{"\"\<Time (s)\>\"", ",", "\"\<Velocity (m/s)\>\""}], 
+         "}"}]}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"accelerationPlot", "=", 
+     RowBox[{"Plot", "[", 
+      RowBox[{
+       RowBox[{"loadAcceleration", "[", "t", "]"}], ",", "timeRange", ",", 
+       RowBox[{"PlotLabel", "->", "\"\<Acceleration vs Time\>\""}], ",", 
+       RowBox[{"AxesLabel", "->", 
+        RowBox[{"{", 
+         RowBox[{"\"\<Time (s)\>\"", ",", "\"\<Acceleration (m/s^2)\>\""}], 
+         "}"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Display", " ", "the", " ", "plots"}], "*)"}], 
+   "\[IndentingNewLine]", "positionPlot", "\n", "velocityPlot", "\n", 
+   "accelerationPlot", "\n"}]}]], "Input",
+ CellChangeTimes->{{3.926074059543789*^9, 
+  3.926074059545788*^9}},ExpressionUUID->"2711bd63-2f0d-3b41-9b60-\
+0d30e8fb2dc6"]
+},
+WindowSize->{569.25, 624.75},
+WindowMargins->{{429, Automatic}, {48, Automatic}},
+FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (December 12, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"aa622c14-c868-3546-9ba6-9dc93468a110"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 6944, 186, 1094, "Input",ExpressionUUID->"2711bd63-2f0d-3b41-9b60-0d30e8fb2dc6"]
+}
+]
+*)
+
+(* End of internal cache information *)
+

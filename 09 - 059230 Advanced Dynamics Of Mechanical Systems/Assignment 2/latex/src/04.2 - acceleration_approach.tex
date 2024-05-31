@@ -1,0 +1,29 @@
+\subsection{Acceleration approach}
+\label{subsec:acceleration_approach}
+
+The acceleration approach instead, consists of assembling the global force vector $\mathbf{F}$ based on the idea that the structure (since it has been discretized), can be seen as a system of masses connected by springs and dampers.
+Because of this, a distributed acceleration load can be directly transformed into a series of nodal forces acting by solving the second Newton's law for each node of the structure.
+
+In particular, the nodal forces can be computed as:
+
+\begin{equation}
+    \mathbf{F} = M \mathbf{acceleration}
+\end{equation}
+
+Where $M$ is the mass matrix of the structure and $\mathbf{acceleration}$ is the vector of accelerations acting on each degree of freedom of the structure.
+
+Finally, we can solve the equation of motion \ref{eq:static_responses} to obtain the displacements of the structure.
+
+In \texttt{MATLAB}, the acceleration approach can be implemented as follows:
+
+\begin{lstlisting}[language=Matlab]
+
+    % Acceleration approach.
+    x_dot_dot = zeros(ndof, 1);
+    x_dot_dot(idb(:, 2)) = -9.81;
+
+    F_nodal = M * x_dot_dot;
+
+    X_gravity_acceleration_approach = K_FF \ F_nodal(1:ndof);
+
+\end{lstlisting}

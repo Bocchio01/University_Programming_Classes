@@ -3,8 +3,8 @@ function [xy,nnod,idb,ndof,incidenze,l,gamma,m,EA,EJ,posiz,nbeam,pr] = load_stru
 lines = readlines(filename);
 
 % NODES
-line_idx = find(contains(lines, "*NODES", 'IgnoreCase', true)) + 2;
-while (~contains(lines(line_idx), "*ENDNODES", 'IgnoreCase', true))
+line_idx = find(contains(lines, "*NODES", 'IgnoreCase', true), 1, 'first') + 2;
+while (~contains(lines(line_idx), ["*ENDNODES", "!"], 'IgnoreCase', true))
 
     tmp = sscanf(lines(line_idx), '%i %i %i %i %f %f');
     ivinc(tmp(1), :) = tmp(2:4);
@@ -28,10 +28,8 @@ idb(ivinc == 1) = ndof + (1:ndoc);
 ivinc = reshape(ivinc, 3, [])';
 idb = reshape(idb, 3, [])';
 
-
-
 % PROPERTIES
-line_idx = find(contains(lines, "*PROPERTIES", 'IgnoreCase', true)) + 2;
+line_idx = find(contains(lines, "*PROPERTIES", 'IgnoreCase', true), 1, 'first') + 2;
 while (~contains(lines(line_idx), "*ENDPROPERTIES", 'IgnoreCase', true))
 
     tmp = sscanf(lines(line_idx), '%i %f %f %f');
@@ -41,9 +39,8 @@ while (~contains(lines(line_idx), "*ENDPROPERTIES", 'IgnoreCase', true))
 
 end
 
-
 % BEAMS
-line_idx = find(contains(lines, "*BEAMS", 'IgnoreCase', true)) + 2;
+line_idx = find(contains(lines, "*BEAMS", 'IgnoreCase', true), 1, 'first') + 2;
 while (~contains(lines(line_idx), "*ENDBEAMS", 'IgnoreCase', true))
 
     tmp = sscanf(lines(line_idx), '%i %i %i %i');

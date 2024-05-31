@@ -1,0 +1,82 @@
+\subsection{FRFs computation}
+\label{subsec:FRFs_computation}
+
+To compute the FRFs, we can either use the direct method or the modal superposition method.
+
+\paragraph{Direct method}
+
+The direct method consists of solving the classical equation of motion considering all the degrees of freedom of the system (or equivalently, all the possible mode shapes of the system).
+
+The equation of motion for a linear system can be written as:
+
+\begin{equation}
+    \mathbf{M} \ddot{\mathbf{u}} + \mathbf{C} \dot{\mathbf{u}} + \mathbf{K} \mathbf{u} = \mathbf{F}
+\end{equation}
+
+Where $\mathbf{M}$, $\mathbf{C}$, and $\mathbf{K}$ are the mass, damping, and stiffness matrices, respectively, $\mathbf{u}$ is the displacement vector, and $\mathbf{F}$ is the external force vector.
+
+To solve this equation, we can work in the complex plane and then consider the real part of the solution to obtain the physical response of the system.
+
+By doing so, the FRF can be computed as:
+
+\begin{equation}
+    \mathbf{H}(j\omega) = (-\omega^2 \mathbf{M} + j\omega \mathbf{C} + \mathbf{K})^{-1} \mathbf{F}
+\end{equation}
+
+Where $\mathbf{H}(j\omega)$ is the FRF relating the particular set of forces $\mathbf{F}$ applied in one or more nodes, to the response of any other node of the structure.
+
+In \texttt{MATLAB}, the FRFs based on direct approach can be implemented as follows:
+
+\begin{lstlisting}[language=Matlab]
+
+    % Here we compute the FRFs due to a vertical force applied to node A with module 1
+    F_F(node_A_vertical) = 1;
+
+    FRF_direct_approach = zeros(size(M_FF, 1), length(omega_vet));
+    for ii = 1:length(omega_vet)
+        FRF_direct_approach(:, ii) = (-omega_vet(ii)^2 * M_FF + 1i*omega_vet(ii) * C_FF + K_FF) \ F_F;
+    end
+
+\end{lstlisting}
+
+
+\paragraph{Modal superposition method}
+
+The modal superposition method is an alternative approach to compute the FRFs of a structure.
+It is based on the modal decomposition of the system response, which allows us to reduce the number of degrees of freedom to consider.
+
+The idea behind this approach, is to consider as negligible the contribution of the higher modes of the system, and to focus only on the first few modes that are significant in the frequency range of interest.
+
+Having this hypothesis in mind, we can proceed with the orthogonalization of the global matrices based on the first $n$ mode shapes of the system, which indeed a significant reduction in size of the given problem.
+As an example, if we consider the first $n=5$ mode shapes of the system, all the matrices will be reduced to a $5 \times 5$ size, and FRFs matrix will also be reduced to a $5 \times size(\omega_{vector})$.
+
+This approach, in general, is more efficient than the direct method, especially when the number of degrees of freedom of the system is high.
+However, as we can imagine, the accuracy of the results will strongly depend on the number of modes considered in the analysis and the position of the forces acting on the structure.
+
+In \texttt{MATLAB}, the FRFs based on modal superposition can be implemented as follows:
+
+\begin{lstlisting}[language=Matlab]
+
+    % To observe the approximation introduced, we consider only 2 modes
+    % Here we compute the FRFs due to a vertical force applied to node A with module 1
+
+    F_F(node_A_vertical) = 1;
+
+    Phi_reduced = mode_shapes(:, 1:2);
+    M_FF_modal_reduced = Phi_reduced' * M_FF * Phi_reduced;
+    C_FF_modal_reduced = Phi_reduced' * C_FF * Phi_reduced;
+    K_FF_modal_reduced = Phi_reduced' * K_FF * Phi_reduced;
+    F_F_modal = Phi_reduced' * F_F;
+
+    FRF_modal_approach = zeros(size(M_FF_modal_reduced, 1), length(omega_vet));
+    for ii = 1:length(omega_vet)
+        FRF_modal_approach(:, ii) = (-omega_vet(ii)^2 * M_FF_modal_reduced + 1i*omega_vet(ii) * C_FF_modal_reduced + K_FF_modal_reduced) \ F_F_modal;
+    end
+
+    FRF_modal_approach = Phi_reduced * FRF_modal_approach;
+
+\end{lstlisting}
+
+Notice that, even if the size of the FRFs matrix is reduced, the final result must be projected back to the original space to obtain the physical response of the system.
+
+The transformation between on set of coordinates and the other is done via the matrix $[\Phi]$ composed by the mode shapes of the system (in this case, the first $n$ mode shapes).

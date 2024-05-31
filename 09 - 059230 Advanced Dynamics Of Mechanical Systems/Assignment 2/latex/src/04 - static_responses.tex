@@ -1,0 +1,22 @@
+\section{Static responses of the structure}
+\label{sec:static_responses}
+
+In this section, the static responses of the structure are computed.
+The static responses are the displacements of the structure when subjected to a static load.
+
+Again, as in many other engineering problems, we can approach this problem in at least a couple of different ways.
+In the following, we will explain how to compute the static responses of the structure using both a displacement approach and an acceleration approach.
+
+Notice that the two method differs only in the way the global force vector $\mathbf{F}$ is assembled.
+In the end, once $\mathbf{F}$ is known, both methods will solve the steady state version of the equation of motion:
+
+\begin{equation}
+    \mathbf{K} \mathbf{u} = \mathbf{F}
+    \label{eq:static_responses}
+\end{equation}
+
+Where $\mathbf{K}$ is the stiffness matrix of the structure, $\mathbf{u}$ is the vector of displacements and $\mathbf{F}$ is the global force vector.
+
+\input{src/04.1 - displacement_approach.tex}
+\input{src/04.2 - acceleration_approach.tex}
+\input{src/04.3 - comparison_of_the_two_methods.tex}

@@ -1,0 +1,47 @@
+\subsection{Trapezoidal motion profile}
+\label{subsec:trapezoidal_motion_profile}
+
+As for the motion type of the mass along the $x$ axis, we can consider a trapezoidal velocity profile, with a constant acceleration phase, a constant velocity phase, and a constant deceleration phase.
+In particular, if we consider the total distance covered by the mass as $L = 24[m]$ and a total time of $T = 20[s]$, we can compute both the accelerations ($a_{acc} = |a_{dec}| = a$), velocity ($v_{max}$), and the time duration of each phase ($t_1$, $t_2$ and $t_3$):
+
+\begin{equation}
+    \begin{cases}
+        L = \frac{1}{2} \cdot a \cdot t_1^2 + v_{max} \cdot t_2 + \frac{1}{2} \cdot |a| \cdot t_3^2 \\
+        T = t_1 + t_2 + t_3
+    \end{cases}
+\end{equation}
+
+By solving the system of equations, we can find the following values:
+
+\begin{equation}
+    \begin{cases}
+        a = 0.25 [m/s^2]  \\
+        v_{max} = 2 [m/s] \\
+        t_1 = 8 [s]       \\
+        t_2 = 4 [s]       \\
+        t_3 = 8 [s]
+    \end{cases}
+\end{equation}
+
+Once the position of the load is computed, we must compute the equivalent nodal forces that is applied to the structure because of the load.
+By neglecting any momentum nodal load, and by considering just the vertical nodal force, we can compute the equivalent nodal force by solving the following equations:
+
+\begin{align}
+    \xi           & = \frac{x - x_1}{x_2 - x_1} \\
+    F_{eq, left}  & = m \cdot g \cdot \xi       \\
+    F_{eq, right} & = m \cdot g \cdot (1 - \xi)
+    \label{eq:equivalent_nodal_force}
+\end{align}
+
+Where $x$ is the position of the mass, $x_1$ and $x_2$ are the position of the two nodes that are closest to the mass, and $g$ is the gravity acceleration.
+
+Once the nodal forces are known for each time step, we can compute the nodal displacements by solving the partial differential equation that describes the motion of the structure:
+
+\begin{equation}
+    M \cdot \ddot{u(t)} + C \cdot \dot{u(t)} + K \cdot u(t) = F_{eq}(t)
+    \label{eq:dynamic_equation}
+\end{equation}
+
+Where $M$, $C$ and $K$ are the mass, damping and stiffness matrices of the structure, $u$ is the nodal displacement vector, and $F_{eq}$ is the equivalent nodal force vector.
+
+To solve the equation, we must rely on a numerical method, such as the `Runge-Kutta' method, that allows us to solve the equation for each time step.

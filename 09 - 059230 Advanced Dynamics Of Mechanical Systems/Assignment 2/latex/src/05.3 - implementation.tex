@@ -1,0 +1,78 @@
+\subsection{Implementation}
+\label{subsec:implementation}
+
+Before proceeding with the discussion about the results, we report here the code implementation used to perform the dynamic analysis of the structure due to the moving load.
+
+Using \texttt{MATLAB}, the code is the following:
+
+\begin{lstlisting}[language=Matlab]
+
+    load_position = @(t) ...
+        (t <= t1) .*                             (1/2 * a * t.^2) + ...
+        (t > t1 & t <= (t1 + t2)) .*             (1/2 * a * t1^2 + v * (t - t1)) + ...
+        (t > (t1 + t2) & t <= (t1 + t2 + t3)) .* (1/2 * a * t1^2 + v * t2 + v * (t - (t2 + t1)) - 1/2 * a * (t - (t1 + t2)).^2) + ...
+        (t > (t1 + t2 + t3)) .*                  (1/2 * a * t1^2 + v * t2 + v * t3 - 1/2 * a * t3.^2);
+
+    Q_func = @(t) Phi' * compute_nodal_load(load_position(t), xy, idb, -9.81 * 40e3);
+
+    initial_conditions = [zeros(length(Q_func(0)), 1) zeros(length(Q_func(0)), 1)];
+    initial_conditions = [zeros(length(Q_func(0)), 1) K_FF_modal \ Q_func(0)];
+
+    [t, z] = ode45( ...
+        @(t, z) EquationOfMotion(t, z, M_FF_modal, C_FF_modal, K_FF_modal, Q_func), ...
+        [0 max(t_vet)], ...
+        initial_conditions, ...
+        odeset('RelTol', 1e-6, 'AbsTol', 1e-6));
+
+    X_moving_load = Phi * z(:, size(Phi, 2)+1:end)';
+
+    %% Functions
+
+    function [z_dot] = EquationOfMotion(t, z, M_FF_modal, C_FF_modal, K_FF_modal, Q_func)
+
+        N_considered_modes = size(K_FF_modal, 1);
+
+        q_dot = z(1:N_considered_modes, 1);
+        q = z(N_considered_modes + (1:N_considered_modes), 1);
+
+        % M * x_dot_dot + C * x_dot + K * x = F(t) -> Modal coordinates -> q
+        q_dot_dot = M_FF_modal \ (Q_func(t) - C_FF_modal * q_dot - K_FF_modal * q);
+
+        z_dot(1:N_considered_modes, 1) = q_dot_dot;
+        z_dot(N_considered_modes + (1:N_considered_modes), 1) = q_dot;
+
+    end
+
+
+    function F_nodal = compute_nodal_load(load_position, xy, idb, F0)
+    % Strictly related to our case at hand, nodes D to A.
+
+        F_nodal = zeros(71, 1);
+
+        if (load_position + xy(7, 1) < xy(8, 1))
+
+            L = xy(8, 1) - xy(7, 1);
+            xi = (load_position) / L;
+
+            N1 = 1 - xi;
+            N2 = xi;
+
+            F_nodal(idb(7, 2)) = F0 * N1;
+            F_nodal(idb(8, 2)) = F0 * N2;
+
+        else
+
+            L = xy(9, 1) - xy(8, 1);
+            xi = (load_position - (xy(8, 1) - xy(7, 1))) / L;
+
+            N1 = 1 - xi;
+            N2 = xi;
+
+            F_nodal(idb(8, 2)) = F0 * N1;
+            F_nodal(idb(9, 2)) = F0 * N2;
+
+        end
+
+end
+
+\end{lstlisting}

@@ -1,4 +1,4 @@
-function plot_deformed(mode,scale_factor,incidenze,l,gamma,posiz,idb,xy)
+function axis_plot = plot_deformed(mode,scale_factor,incidenze,l,gamma,posiz,idb,xy)
 
 % Checking consistency input data
 [n_el,nc]=size(incidenze);
@@ -74,4 +74,6 @@ plot(xyG(:,1),xyG(:,2),'bo')
 grid on
 box on
 axis equal
+
+axis_plot = gca;
 end
