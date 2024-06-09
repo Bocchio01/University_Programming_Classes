@@ -19,7 +19,7 @@ xlabel('Length [m]')
 ylabel('Height [m]')
 legend('Undeformed shape','Deformed shape')
 
-% plot_struct.data{end+1} = {gca, '/Responses/Gravity_displacement'};
+plot_struct.data{end+1} = {gca, '/Responses/Gravity_displacement'};
 
 
 nexttile(tiles);
@@ -33,7 +33,7 @@ xlabel('Length [m]')
 ylabel('Height [m]')
 legend('Undeformed shape','Deformed shape')
 
-% plot_struct.data{end+1} = {gca, '/Responses/Gravity_acceleration'};
+plot_struct.data{end+1} = {gca, '/Responses/Gravity_acceleration'};
 
 linkaxes([axis_displacemnt axis_acceleration])
 

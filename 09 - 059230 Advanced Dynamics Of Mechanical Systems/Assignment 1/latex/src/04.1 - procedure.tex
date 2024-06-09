@@ -44,7 +44,13 @@ This can be done by looking at the magnitude of the FRFs evaluated at the natura
 In particular, we can obtain the value of the gain $A_{j, k}^{NUM}$ numerically as:
 
 \begin{equation}
-    A_{j, k}^{NUM} = 2 \left| G_{j, k}^{EXP}(\omega_i^{NUM}) \right| \omega_i^2 \xi_i^{NUM}
+    A_{j, k}^{NUM} = -2i \left| G_{j, k}^{EXP}(\omega_i^{NUM}) \right| \omega_i^2 \xi_i^{NUM}
+\end{equation}
+
+However, in order to reduce the disturbances effects coming from the low and high frequency terms, we decided to use a more robust method to identify the gain $A_{j, k}^{NUM}$, relying on just the imaginary part of the FRF evaluated at the natural frequency $\omega_i$:
+
+\begin{equation}
+    A_{j, k}^{NUM} = - Im\left[2\left| G_{j, k}^{EXP}(\omega_i^{NUM}) \right| \omega_i^2 \xi_i^{NUM}\right]
 \end{equation}
 
 \paragraph{Final minimization algorithm}

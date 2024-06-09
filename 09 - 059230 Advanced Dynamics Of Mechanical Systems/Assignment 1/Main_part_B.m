@@ -76,9 +76,11 @@ disp('Numerical dampings: '); xi_num * 100
 
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+% set(0, 'defaultaxesfontsize', 15);
+% set(0, 'DefaultLineLineWidth', 2);
 
 plot_struct.flags = true * [1 1 1];
-plot_struct.export_path = 'latex/img/MATLAB/Part_B';
+% plot_struct.export_path = 'latex/img/MATLAB/Part_B';
 plot_struct.data = cell(0);
 
 if (plot_struct.flags(1))

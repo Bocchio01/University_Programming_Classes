@@ -19,6 +19,11 @@ set(gca, 'YScale', 'log')
 title(['|G_{exp}(f)| @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
 xlabel('f [Hz]')
 ylabel('|G(f)| [m/N]')
+legend_entries = cell(1, length(xj_idx));
+for i = 1:length(xj_idx)
+    legend_entries{i} = sprintf('xj = %d, xk = %d', xj_idx(i), xk_idx(i));
+end
+legend(legend_entries);
 
 angle_FRF = nexttile(tiles);
 hold on
@@ -56,6 +61,11 @@ set(gca, 'YScale', 'log')
 title(['|G_{exp}(f)| @[xk, xj] = [' num2str(xk_idx) ', ' num2str(xj_idx) ']'])
 xlabel('f [Hz]')
 ylabel('|G(f)| [m/N]')
+legend_entries = cell(1, length(xj_idx));
+for i = 1:length(xj_idx)
+    legend_entries{i} = sprintf('xj = %d, xk = %d', xj_idx(i), xk_idx(i));
+end
+legend(legend_entries);
 
 angle_FRF = nexttile(tiles);
 hold on

@@ -39,7 +39,7 @@ mode_shapes = mode_shapes(:, omega_idx);
 
 omega_vet = 2*pi * linspace(0, 8, 1000);
 
-Phi = mode_shapes(:, 1:5);
+Phi = mode_shapes(:, 1:4);
 M_FF_modal = Phi' * M_FF * Phi;
 C_FF_modal = Phi' * C_FF * Phi;
 K_FF_modal = Phi' * K_FF * Phi;
@@ -100,7 +100,7 @@ F_F(node_C_vertical) = 0;
 % Displacement approach. Refer to Prof. Cocchetti's tables to check the
 % coefficients of equivalent nodal loads due to a distributed one along
 % the FEM element.
-F_global = zeros(3*nnod, 1);
+F_F_global = zeros(3*nnod, 1);
 
 for ii = 1:nbeam
     
@@ -121,20 +121,20 @@ for ii = 1:nbeam
     
     global_equivalent_nodal_load = Q * elemental_equivalent_nodal_load;
     
-    F_global(incid(ii, :)) = F_global(incid(ii, :)) + global_equivalent_nodal_load;
+    F_F_global(incid(ii, :)) = F_F_global(incid(ii, :)) + global_equivalent_nodal_load;
     
 end
 
-X_gravity_displacement_approach = K_FF \ F_global(1:ndof);
+X_gravity_displacement_approach = K_FF \ F_F_global(1:ndof);
 
 
 % Acceleration approach.
 x_dot_dot = zeros(ndof, 1);
 x_dot_dot(idb(:, 2)) = -9.81;
 
-F_nodal = M * x_dot_dot;
+F_F_nodal = M * x_dot_dot;
 
-X_gravity_acceleration_approach = K_FF \ F_nodal(1:ndof);
+X_gravity_acceleration_approach = K_FF \ F_F_nodal(1:ndof);
 
 
 %% Moving load and displacement time history of node A
@@ -174,8 +174,10 @@ X_moving_load = Phi * z(:, size(Phi, 2)+1:end)';
 reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+set(0, 'defaultaxesfontsize', 15);
+set(0, 'DefaultLineLineWidth', 2);
 
-plot_struct.flags = true * [0 0 0 1];
+plot_struct.flags = true * [0 1 0 0];
 % plot_struct.export_path = 'latex/img/MATLAB';
 plot_struct.data = cell(0);
 scale_factor = 10;

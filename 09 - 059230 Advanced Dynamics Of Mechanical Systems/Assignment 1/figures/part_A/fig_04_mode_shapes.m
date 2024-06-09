@@ -11,7 +11,7 @@ for ii = 1:length(f_nat_vet)
 
     plot(x_vet, mode_shape(:, ii), 'LineWidth', 1)
     plot(xj_output, real(A_num(1:6, ii)) / max(abs(A_num(1:6, ii))), 'or')
-
+    
     title(['Mode Shape ' num2str(ii)])
     legend('Experimental', 'Numerical')
 

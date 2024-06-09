@@ -7,30 +7,30 @@ A common approach to assemble the mass and stiffness matrices is to loop over al
 To do so, it is necessary to calculate the element matrices, which are the mass and stiffness matrices of each element in the local reference frame.
 Then, the element matrices are transformed into the global reference frame and added to the global matrices.
 
-The mass matrix of an element is calculated as:
+The mass matrix of an element is computed as:
 
 \begin{equation}
-    [M_{el}] = \int_{0}^{L} \rho A N^T N dx
+    [M_{el}] = \int_{0}^{L} \mathbf{N}^T \rho A \mathbf{N} dx
 \end{equation}
 
 Where $\rho$ is the mass density of the material, $A$ is the cross-sectional area of the element, $N$ is the shape function matrix, and $L$ is the length of the element.
 
-The stiffness matrix of an element is calculated as:
+The stiffness matrix of an element is computed as:
 
 \begin{equation}
-    [K_{el}] = \int_{0}^{L} [E] B^T B dx
+    [K_{el}] = \int_{0}^{L}  \mathbf{B}^T [E] \mathbf{B} dx
 \end{equation}
 
-Where $[E]$ is the elasticity matrix of the material, $B$ is the strain-displacement matrix, and $L$ is the length of the element.
+Where $[E]$ is the elasticity matrix of the material, $\mathbf{B}$ is the strain-displacement matrix, and $L$ is the length of the element.
 
-Once the element matrices are calculated, they are transformed into the global reference frame using the transformation matrix $[Q]$:
+Once the element matrices are computed, they are transformed into the global reference frame using the transformation matrix $[Q]$:
 
 \begin{align}
     [M_{el}] & = [Q]^T [M_{el}] [Q] \\
     [K_{el}] & = [Q]^T [K_{el}] [Q]
 \end{align}
 
-Where $[Q]$ is the transformation matrix of the element, which is calculated as:
+Where $[Q]$ is the transformation matrix of the element, which is computed as:
 
 \begin{equation}
     [Q] = \begin{bmatrix}
@@ -52,11 +52,11 @@ Finally, the element matrices are added to the global matrices considering the c
     [K] & = [K] + [Q]^T [K_{el}] [Q]
 \end{align}
 
-The damping matrix can be calculated similarly, using the proportional damping matrix $[C] = \alpha [M] + \beta [K]$.
+The damping matrix can be computed similarly, using the proportional damping matrix $[C] = \alpha [M] + \beta [K]$.
 
 \paragraph{Matrices partitioning}
 
-As a preference choice (even if not strictly necessary), the structure geometry definition, and in particular the node and degree of freedom numbering were performed in order to have the following partitioning of the matrices:
+As a preference choice (even if not strictly necessary), the structure geometry definition and in particular the node and degree of freedom numbering, were performed in order to have the following partitioning of the matrices:
 
 \begin{equation}
     [M] = \begin{bmatrix}

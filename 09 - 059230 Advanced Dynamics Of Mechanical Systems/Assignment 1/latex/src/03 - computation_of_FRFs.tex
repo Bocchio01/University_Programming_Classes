@@ -10,10 +10,10 @@ By definition, the FRF is the ratio of the output to the input in the frequency 
 For a linear time-invariant system, the FRF is a complex-valued function of the frequency, and it is defined as:
 
 \begin{equation}
-    H(\omega) = \frac{Y(\omega)}{F(\omega)}
+    H(\omega) = \frac{Y(\omega)}{X(\omega)}
 \end{equation}
 
-Where $H(\omega)$ is the FRF, $Y(\omega)$ is the Fourier transform of the output signal $y(t)$, and $F(\omega)$ is the Fourier transform of the input signal $f(t)$.
+Where $H(\omega)$ is the FRF, $Y(\omega)$ is the Fourier transform of the output signal $y(t)$, and $X(\omega)$ is the Fourier transform of the input signal $x(t)$.
 
 Moreover, to give a more practical definition, the FRF is the function that relates the output of a system considered at a specific coordinate to a sinusoidal input at a given coordinate.
 If we then consider the system to be linear, time-invariant, and with a single input $@x_k$ and a single output $@x_j$, than the FRF can be defined as:
@@ -44,7 +44,7 @@ Where, all the entities of Equation \ref{eq:FRF} are defined in Table \ref{tab:F
 
 As we can notice, among the entities of Equation \ref{eq:FRF}, at the moment we are only missing the equivalent mass $m_i$ and the damping ratio $\xi_i$.
 
-The equivalent mass $m_i$ is a fictitious mass that represents the amount of mass of the system that is effectively moving in the $i^{th}$ mode, weighted by the mode shape.
+The equivalent mass $m_i$ is a fictitious value that represents the amount of mass of the system that is effectively moving in the $i^{th}$ mode, weighted by the mode shape.
 From this definition, we get:
 
 \begin{equation}

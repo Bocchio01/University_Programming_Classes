@@ -11,7 +11,7 @@ for ii = 1:size(Phi, 2)
     
     axis tight
     
-    title(['Mode shape ' num2str(ii) ' @\omega_' num2str(ii) ' = ' num2str(omega_nat(ii), 5) ' [rad/s]'])
+    title(['Mode shape ' num2str(ii) ' @f_' num2str(ii) ' = ' num2str(omega_nat(ii)/(2*pi), 3) ' [Hz]'])
     xlabel('Length [m]')
     ylabel('Height [m]')
 

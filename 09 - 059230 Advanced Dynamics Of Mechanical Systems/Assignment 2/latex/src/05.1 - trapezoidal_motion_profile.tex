@@ -23,13 +23,15 @@ By solving the system of equations, we can find the following values:
     \end{cases}
 \end{equation}
 
-Once the position of the load is computed, we must compute the equivalent nodal forces that is applied to the structure because of the load.
-By neglecting any momentum nodal load, and by considering just the vertical nodal force, we can compute the equivalent nodal force by solving the following equations:
+Once the position of the load over time is computed, we must compute the equivalent nodal forces that is applied to the structure because of the load.
+
+For simplicity, we neglect any nodal momentum, and we just consider the vertical nodal force.
+By doing so, we can compute the equivalent nodal force by solving the following equations:
 
 \begin{align}
     \xi           & = \frac{x - x_1}{x_2 - x_1} \\
-    F_{eq, left}  & = m \cdot g \cdot \xi       \\
-    F_{eq, right} & = m \cdot g \cdot (1 - \xi)
+    \mathbf{F_{F, eq, left}}  & = m \cdot g \cdot \xi       \\
+    \mathbf{F_{F, eq, right}} & = m \cdot g \cdot (1 - \xi)
     \label{eq:equivalent_nodal_force}
 \end{align}
 
@@ -38,10 +40,10 @@ Where $x$ is the position of the mass, $x_1$ and $x_2$ are the position of the t
 Once the nodal forces are known for each time step, we can compute the nodal displacements by solving the partial differential equation that describes the motion of the structure:
 
 \begin{equation}
-    M \cdot \ddot{u(t)} + C \cdot \dot{u(t)} + K \cdot u(t) = F_{eq}(t)
+    [M_{FF}] \cdot \mathbf{\ddot{X}}(t) + [C_{FF}] \cdot \mathbf{\dot{X}}(t) + [K_{FF}] \cdot \mathbf{X}(t) = \mathbf{F_{F, eq}}(t)
     \label{eq:dynamic_equation}
 \end{equation}
 
-Where $M$, $C$ and $K$ are the mass, damping and stiffness matrices of the structure, $u$ is the nodal displacement vector, and $F_{eq}$ is the equivalent nodal force vector.
+Where $[M_{FF}]$, $[C_{FF}]$ and $[K_{FF}]$ are the mass, damping and stiffness matrices of the structure, $\mathbf{X}$ is the nodal displacement vector, and $\mathbf{F_{F, eq}}$ is the equivalent nodal force vector.
 
 To solve the equation, we must rely on a numerical method, such as the `Runge-Kutta' method, that allows us to solve the equation for each time step.

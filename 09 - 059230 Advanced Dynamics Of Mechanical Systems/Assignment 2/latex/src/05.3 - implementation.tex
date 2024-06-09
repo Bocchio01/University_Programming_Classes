@@ -5,8 +5,7 @@ Before proceeding with the discussion about the results, we report here the code
 
 Using \texttt{MATLAB}, the code is the following:
 
-\begin{lstlisting}[language=Matlab]
-
+\begin{lstlisting}[language=Matlab, caption={Implementation of the moving load dynamic analysis.}]
     load_position = @(t) ...
         (t <= t1) .*                             (1/2 * a * t.^2) + ...
         (t > t1 & t <= (t1 + t2)) .*             (1/2 * a * t1^2 + v * (t - t1)) + ...

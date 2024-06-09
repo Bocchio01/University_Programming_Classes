@@ -4,9 +4,9 @@
 Even if the comparison between the experimental FRFs and the numerical FRFs in the complex plane is a good way to validate the identified parameters, it is also useful to compare the mode shapes obtained from the experimental data with the ones obtained from the numerical model.
 
 In the following figures, the experimental (from flexible body theory) and numerical mode shapes are compared for the first 4 modes of the system.
-In particular, even if in theory the mode shapes are characteristic of the structure per se, the numerical model is not able to capture exactly the same shape for every set of input-output points.
+% In particular, even if in theory the mode shapes are characteristic of the structure per se, the numerical model is not able to capture exactly the same shape for every set of input-output points.
 
-To be consistent with the previously shown FRF figures, we are now going to represent the experimental mode shapes in blue, and the numerical mode shapes computed considering an input in $x_k = 1.0m$ and an output in $y_j = 0.6m$ is shown.
+% To be consistent with the previously shown FRF figures, we are now going to represent the experimental mode shapes in blue, and the numerical mode shapes computed considering an input in $x_k = 1.0m$ and an output in $y_j = 0.6m$ is shown.
 
 \begin{figure}[H]
     \begin{minipage}[b]{0.45\textwidth}
@@ -34,7 +34,7 @@ To be consistent with the previously shown FRF figures, we are now going to repr
 Numerically speaking, we can also report the relative error between the experimental and numerical natural frequencies, defined as follows:
 
 \begin{equation}
-    \text{Relative error} = \frac{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} - \omega_{\text{num},i} \right|}{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} \right| \%}
+    \text{Relative error} = \frac{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} - \omega_{\text{num},i} \right|}{\sum_{i=1}^{N} \left| \omega_{\text{exp},i} \right|} \%
 \end{equation}
 
 Where $\omega_{\text{exp},i}$ and $\omega_{\text{num},i}$ are the $i$-th experimental and numerical natural frequencies, respectively.
@@ -53,6 +53,6 @@ The relative error for the first 4 natural frequencies of the system is reported
         4    & 973.0323             & 973.0560          & -0.0024             \\
         \hline
     \end{tabular}
-    \caption{Relative error between experimental and numerical natural frequencies}
+    \caption{Relative error between experimental (in this case coming the flexible body theory) and numerical natural frequencies.}
     \label{tab:Relative_error_frequencies}
 \end{table}

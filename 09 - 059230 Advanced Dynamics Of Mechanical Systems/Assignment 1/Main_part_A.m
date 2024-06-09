@@ -175,6 +175,8 @@ disp('Relative errors: '); (omega(f_nat_vet) - omega_num_nat)./omega(f_nat_vet) 
 
 set(0, 'DefaultFigureNumberTitle', 'off');
 set(0, 'DefaultFigureWindowStyle', 'docked');
+% set(0, 'defaultaxesfontsize', 15);
+% set(0, 'DefaultLineLineWidth', 2);
 
 plot_struct.flags = true * [1 1 1 1];
 % plot_struct.export_path = 'latex/img/MATLAB/Part_A';
@@ -198,9 +200,9 @@ end
 
 pause(1);
 if (isfield(plot_struct, 'export_path'))
-    for plot_idx = 1:numel(plots_to_be_exported)
+    for plot_idx = 1:numel(plot_struct.data)
     
-        current_plot = plots_to_be_exported{plot_idx};
+        current_plot = plot_struct.data{plot_idx};
         tile = current_plot{1};
         local_path = current_plot{2};
 

@@ -56,11 +56,17 @@ for ii = 1:length(f_nat_vet)
     grid on
     copyobj(abs_FRF.Children, tile_abs)
 
+    set(tile_abs, 'YScale', 'log')
+
     title(['FRF @[xk, xj, peak] = [' num2str(xk_idx) ', ' num2str(xj_idx) ', ' num2str(ii) ']'])
+    legend('G_{exp}(f)', 'G_{num}(f)')
 
     tile_angle = nexttile(tiles, 3);
     grid on
     copyobj(angle_FRF.Children, tile_angle)
+
+    set(tile_angle, 'YTick', -pi:pi/2:pi)
+    set(tile_angle, 'YTickLabel', {'-pi', '-pi/2', '0', 'pi/2', 'pi'})
 
     linkaxes([tile_abs tile_angle], 'x')
 
