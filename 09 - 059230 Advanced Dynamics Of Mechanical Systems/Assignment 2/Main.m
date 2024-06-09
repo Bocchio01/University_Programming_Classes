@@ -39,7 +39,7 @@ mode_shapes = mode_shapes(:, omega_idx);
 
 omega_vet = 2*pi * linspace(0, 8, 1000);
 
-Phi = mode_shapes(:, 1:4);
+Phi = mode_shapes(:, 1:50);
 M_FF_modal = Phi' * M_FF * Phi;
 C_FF_modal = Phi' * C_FF * Phi;
 K_FF_modal = Phi' * K_FF * Phi;
@@ -157,8 +157,8 @@ load_position = @(t) ...
 
 Q_func = @(t) Phi' * compute_nodal_load(load_position(t), xy, idb, -9.81 * 40e3);
 
-initial_conditions = [zeros(length(Q_func(0)), 1) zeros(length(Q_func(0)), 1)];
-% initial_conditions = [zeros(length(Q_func(0)), 1) K_FF_modal \ Q_func(0)];
+% initial_conditions = [zeros(length(Q_func(0)), 1) zeros(length(Q_func(0)), 1)];
+initial_conditions = [zeros(length(Q_func(0)), 1) K_FF_modal \ Q_func(0)];
 
 [t, z] = ode45( ...
     @(t, z) EquationOfMotion(t, z, M_FF_modal, C_FF_modal, K_FF_modal, Q_func), ...
@@ -177,7 +177,7 @@ set(0, 'DefaultFigureWindowStyle', 'docked');
 set(0, 'defaultaxesfontsize', 15);
 set(0, 'DefaultLineLineWidth', 2);
 
-plot_struct.flags = true * [0 1 0 0];
+plot_struct.flags = true * [0 0 0 1];
 % plot_struct.export_path = 'latex/img/MATLAB';
 plot_struct.data = cell(0);
 scale_factor = 10;
@@ -234,29 +234,39 @@ end
 function F_nodal = compute_nodal_load(load_position, xy, idb, F0)
 % Strictly related to our case at hand, nodes D to A.
 
+Fu = @(xi, L) [
+    1 - xi/L;
+    0;
+    0;
+    xi / L;
+    0;
+    0;
+];
+
+Fw = @(xi, L) [
+    0;
+    2 * (xi / L)^3 - 3 * (xi / L)^2 + 1;
+    L * ((xi / L)^3 - 2 * (xi / L)^2 + xi / L);
+    0;
+    -2 * (xi / L)^3 + 3 * (xi / L)^2;
+    L * ((xi / L)^3 - (xi / L)^2);
+    ];
+
 F_nodal = zeros(71, 1);
 
 if (load_position + xy(7, 1) < xy(8, 1))
     
     L = xy(8, 1) - xy(7, 1);
-    xi = (load_position) / L;
+    xi = load_position;
     
-    N1 = 1 - xi;
-    N2 = xi;
-    
-    F_nodal(idb(7, 2)) = F0 * N1;
-    F_nodal(idb(8, 2)) = F0 * N2;
+    F_nodal([idb(7, :) idb(8, :)]) = Fw(xi, L) * F0;
     
 else
     
     L = xy(9, 1) - xy(8, 1);
-    xi = (load_position - (xy(8, 1) - xy(7, 1))) / L;
+    xi = load_position - (xy(8, 1) - xy(7, 1));
     
-    N1 = 1 - xi;
-    N2 = xi;
-    
-    F_nodal(idb(8, 2)) = F0 * N1;
-    F_nodal(idb(9, 2)) = F0 * N2;
+    F_nodal([idb(8, :) idb(9, :)]) = Fw(xi, L) * F0;
     
 end
 
