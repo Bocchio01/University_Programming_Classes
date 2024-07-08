@@ -128,7 +128,7 @@ for set_idx = 1:length(start_idx)
     title(['Time averaged (considering subset ' num2str(start_idx(set_idx)) ':' num2str(end_idx(set_idx))  ')']);
     xlabel('Time [s]')
     ylabel('Radial acceleration [m/s^2]')
-    % legend('Averaged accelration signal')
+    % legend('Averaged acceleration signal')
 
 end
 

@@ -57,7 +57,10 @@ for revolution_idx = 1:revolutions.N
         revolutions.signal_filtered{revolution_idx} = signal_original;
     end
 
-    revolutions.signal(revolution_idx, :) = spline(revolutions.t_original{revolution_idx}, revolutions.signal_filtered{revolution_idx}, revolutions.t_interpolation_vet);
+    revolutions.signal(revolution_idx, :) = spline( ...
+        revolutions.t_original{revolution_idx}, ...
+        revolutions.signal_filtered{revolution_idx}, ...
+        revolutions.t_interpolation_vet);
 
 end
 

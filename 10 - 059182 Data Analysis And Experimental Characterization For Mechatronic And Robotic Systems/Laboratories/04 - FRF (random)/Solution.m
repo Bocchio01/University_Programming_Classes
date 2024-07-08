@@ -206,7 +206,7 @@ for hann_idx = 1:length(hann_time_length)
     % of the structure or only due to the input that is working at that
     % frquency. To solve this, we can use a white noise as input (excite
     % all the frequency with the same power over every frequency (i.e hammer
-    % test)) or adopt 
+    % test)) or adopt coherence functions
     semilogy(G.f_vet{hann_idx}, G.y1y1{hann_idx});
     semilogy(G.f_vet{hann_idx}, G.y2y2{hann_idx});
 

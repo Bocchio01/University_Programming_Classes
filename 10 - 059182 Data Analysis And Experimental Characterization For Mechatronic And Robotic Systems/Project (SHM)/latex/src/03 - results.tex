@@ -1,0 +1,70 @@
+\section{Results}
+
+\begin{frame}{MSD vs. PCA - Baseline set length ($b$)}
+
+    Here we observe the effect of the baseline set length $b$ on the accuracy of the two methods.
+
+    \begin{figure}[H]
+        \centering
+        \only<1>{
+            \includegraphics[width=0.9\textwidth]{img/Baseline/MSD_Baseline_3550.pdf}
+            \caption{MSD method considering $b = 3550$}
+        }
+        \only<2>{
+            \includegraphics[width=0.9\textwidth]{img/Baseline/MSD_Baseline_7100.pdf}
+            \caption{MSD method considering $b = 7100$}
+        }
+        \only<3>{
+            \includegraphics[width=0.9\textwidth]{img/Baseline/PCA_Baseline_3550.pdf}
+            \caption{PCA method considering $b = n = 3550$}
+        }
+        \only<4>{
+            \includegraphics[width=0.9\textwidth]{img/Baseline/PCA_Baseline_7100.pdf}
+            \caption{PCA method considering $b = n = 7100$}
+        }
+    \end{figure}
+
+    \vspace{-9pt}
+
+    \only<1,2>{
+        The MSD method is highly sensitive to $b$ and if the baseline set doesn't contain a complete set of environmental conditions, it may lead to false positives/negatives.
+    }
+
+    \only<3,4>{
+        The PCA method, instead, is able to detect outliers (almost) independently of the baseline set length, thus shorter campaigns can be performed without losing accuracy.
+    }
+
+\end{frame}
+
+
+
+\begin{frame}{PCA - Observation window length ($n$)}
+
+    A key difference between the MSD and PCA methods is that MSD compute the index for each observation record, while PCA computes the index for a set of records with length $n$.
+
+    \begin{figure}[H]
+        \centering
+        \only<1>{
+            \includegraphics[width=0.9\textwidth]{img/Window/PCA_Window_1775.pdf}
+            \caption{PCA method considering $b = 3550$ \& $n = 1775$}
+        }
+        \only<2>{
+            \includegraphics[width=0.9\textwidth]{img/Window/PCA_Window_3550.pdf}
+            \caption{PCA method considering $b = 3550$ \& $n = 3550$}
+        }
+        \only<3>{
+            \includegraphics[width=0.9\textwidth]{img/Window/PCA_Window_7100.pdf}
+            \caption{PCA method considering $b = 3550$ \& $n = 7100$}
+        }
+        \only<4>{
+            \includegraphics[width=0.9\textwidth]{img/Window/PCA_Window_14200.pdf}
+            \caption{PCA method considering $b = 3550$ \& $n = 14200$}
+        }
+    \end{figure}
+
+    \vspace{-9pt}
+
+    It's clear how $n$ affect the reactivity of the PCA method to detect outliers.
+    In particular, the higher $n$, the slower the transient response of the index.
+
+\end{frame}
